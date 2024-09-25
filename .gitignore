@@ -1,0 +1,16 @@
+# Python
+*.pyc
+__pycache__/
+
+# Entorno virtual
+venv/
+
+# Archivos de configuración del entorno
+.env
+
+# Archivos del editor
+.idea/
+.vscode/
+
+# Bases de datos locales
+*.db
