@@ -6,7 +6,8 @@ class Beneficiary:
     id: int
     name: str
     satisfaction: int
-    date_registered: datetime  # Nueva propiedad para almacenar la fecha de registro
+    date_registered: datetime
+    region: str  # Nueva propiedad para la región Nueva propiedad para almacenar la fecha de registro
 
 @dataclass
 class FoodPackage:
