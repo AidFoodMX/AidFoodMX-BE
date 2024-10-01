@@ -80,8 +80,10 @@ def register_routes(app):
     def update_inventory_route():
         data = request.json
         updated_inventory = update_inventory(data)
-        return jsonify({"message": "Inventory updated", "inventory": updated_inventory.__dict__}), 200
-
+        return jsonify({
+            "message": "Inventory updated",
+            "inventory": updated_inventory
+        }), 200
     # Ruta POST para registrar las donaciones recibidas
     @app.route('/record_donations', methods=['POST'])
     def record_donations_route():
@@ -89,12 +91,11 @@ def register_routes(app):
         updated_donations = record_donations(data)
         return jsonify({"message": "Donations recorded", "donations": updated_donations}), 200
 
-    # Ruta GET para obtener el inventario total
     @app.route('/get_total_inventory', methods=['GET'])
     def get_total_inventory_route():
-        total_inventory = get_total_inventory()
-        return jsonify({"total_inventory": total_inventory.__dict__}), 200
-
+        total_inventory = get_total_inventory()  # Call the service function
+        return jsonify(total_inventory), 200  # Return the result as a JSON response
+    
     # Ruta GET para obtener las donaciones por mes
     @app.route('/get_donations_per_month', methods=['GET'])
     def get_donations_per_month_route():
