@@ -1,7 +1,7 @@
 from .models import Beneficiary
 from datetime import datetime
 from collections import defaultdict 
-from .models import FoodPackage
+from .models import FoodPackage, Inventory
 from datetime import datetime, timedelta
 from collections import defaultdict
 import math
@@ -138,3 +138,53 @@ def predict_future_beneficiaries(region, period):
         predictions[next_month] = last_month_count
 
     return predictions
+
+
+
+# Initialize inventory with zero values
+inventory = Inventory(non_perishables=0, cereals=0, fruits_vegetables=0, dairy=0, meat=0, last_updated=datetime.now())
+
+# Donations history to track per month and per week
+donations = defaultdict(lambda: defaultdict(int))  # {'2024-09': {'non_perishables': 10, 'cereals': 5, ...}}
+
+# Servicio para actualizar inventario
+def update_inventory(data):
+    inventory.non_perishables += data.get('non_perishables', 0)
+    inventory.cereals += data.get('cereals', 0)
+    inventory.fruits_vegetables += data.get('fruits_vegetables', 0)
+    inventory.dairy += data.get('dairy', 0)
+    inventory.meat += data.get('meat', 0)
+    inventory.last_updated = datetime.now()
+    return inventory
+
+# Servicio para registrar donaciones por semana y mes
+def record_donations(data):
+    today = datetime.now()
+    month = today.strftime('%Y-%m')
+    week = today.strftime('%Y-%U')  # Week number of the year
+
+    # Actualizar la cantidad donada por mes y por semana
+    donations[month]['non_perishables'] += data.get('non_perishables', 0)
+    donations[month]['cereals'] += data.get('cereals', 0)
+    donations[month]['fruits_vegetables'] += data.get('fruits_vegetables', 0)
+    donations[month]['dairy'] += data.get('dairy', 0)
+    donations[month]['meat'] += data.get('meat', 0)
+
+    return donations[month]
+
+# Servicio para obtener el inventario total actual
+def get_total_inventory():
+    return inventory
+
+# Servicio para obtener las donaciones por mes
+def get_donations_per_month():
+    return donations
+
+# Servicio para obtener las donaciones por semana
+def get_donations_per_week():
+    week_donations = defaultdict(lambda: defaultdict(int))
+    for month, items in donations.items():
+        for food_type, amount in items.items():
+            week = datetime.strptime(month, '%Y-%m').strftime('%Y-%U')
+            week_donations[week][food_type] += amount
+    return week_donations

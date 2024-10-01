@@ -1,7 +1,8 @@
 from flask import request, jsonify
 from datetime import datetime, timedelta
 from .services import register_beneficiary_with_region, get_beneficiaries_per_month, get_beneficiaries_per_day
-from .services import register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, predict_future_beneficiaries
+from .services import register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, predict_future_beneficiaries, update_inventory, record_donations, get_total_inventory, get_donations_per_month, get_donations_per_week
+
 
 def register_routes(app):
     @app.route('/')
@@ -73,3 +74,35 @@ def register_routes(app):
         period = int(request.args.get('period', 3))  # Default a 3 meses
         predictions = predict_future_beneficiaries(region, period)
         return jsonify({"predictions": predictions}), 200
+    
+        # Ruta POST para actualizar el inventario
+    @app.route('/update_inventory', methods=['POST'])
+    def update_inventory_route():
+        data = request.json
+        updated_inventory = update_inventory(data)
+        return jsonify({"message": "Inventory updated", "inventory": updated_inventory.__dict__}), 200
+
+    # Ruta POST para registrar las donaciones recibidas
+    @app.route('/record_donations', methods=['POST'])
+    def record_donations_route():
+        data = request.json
+        updated_donations = record_donations(data)
+        return jsonify({"message": "Donations recorded", "donations": updated_donations}), 200
+
+    # Ruta GET para obtener el inventario total
+    @app.route('/get_total_inventory', methods=['GET'])
+    def get_total_inventory_route():
+        total_inventory = get_total_inventory()
+        return jsonify({"total_inventory": total_inventory.__dict__}), 200
+
+    # Ruta GET para obtener las donaciones por mes
+    @app.route('/get_donations_per_month', methods=['GET'])
+    def get_donations_per_month_route():
+        donations_per_month = get_donations_per_month()
+        return jsonify({"donations_per_month": donations_per_month}), 200
+
+    # Ruta GET para obtener las donaciones por semana
+    @app.route('/get_donations_per_week', methods=['GET'])
+    def get_donations_per_week_route():
+        donations_per_week = get_donations_per_week()
+        return jsonify({"donations_per_week": donations_per_week}), 200
