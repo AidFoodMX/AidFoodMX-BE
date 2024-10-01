@@ -10,10 +10,121 @@ Para ejecutar este proyecto localmente, necesitarás tener instalados los siguie
 - **pip** (el gestor de paquetes de Python)
 - Un entorno virtual de Python (recomendado)
 
-## Instalación
+## ejemplos de uso de los endpoints 
+# AidFoodMX Backend API
 
-### Paso 1: Clonar el repositorio
+This section describes the API endpoints for managing inventory and donations.
 
-```bash
-git clone https://github.com/tu_usuario/aidfoodmx-backend.git
-cd aidfoodmx-backend
+## 1. Update Inventory
+
+- **Method:** `POST`
+- **URL:** `http://127.0.0.1:5000/update_inventory`
+- **Body Example (JSON):**
+  ```json
+  {
+    "non_perishables": 10,
+    "cereals": 5,
+    "fruits_vegetables": 12,
+    "dairy": 4,
+    "meat": 3
+  }
+   ```
+
+  	•	Description: Updates the current inventory by adding the specified quantities of each item category (non-perishables, cereals, fruits and vegetables, dairy, and meat).
+
+2. Record Donations
+
+	•	Method: POST
+	•	URL: http://127.0.0.1:5000/record_donations
+	•	Body Example (JSON):
+  ```json
+    {
+  "non_perishables": 5,
+  "cereals": 2,
+  "fruits_vegetables": 7,
+  "dairy": 1,
+  "meat": 2
+  } 
+  ```  
+ 
+
+
+	•	Description: Records donations received and updates the donation count for the current month and week based on the date of the request.
+
+3. Get Total Inventory
+
+	•	Method: GET
+	•	URL: http://127.0.0.1:5000/get_total_inventory
+	•	Response Example (JSON):
+  ```json
+{
+  "total_inventory": {
+    "non_perishables": 100,
+    "cereals": 50,
+    "fruits_vegetables": 70,
+    "dairy": 30,
+    "meat": 25,
+    "last_updated": "2024-09-24T10:00:00"
+  }
+}
+  ``` 
+
+  	•	Description: Retrieves the current total inventory of each item category (non-perishables, cereals, fruits and vegetables, dairy, and meat).
+
+4. Get Donations Per Month
+
+	•	Method: GET
+	•	URL: http://127.0.0.1:5000/get_donations_per_month
+	•	Response Example (JSON):
+  ```json
+    {
+  "donations_per_month": {
+    "2024-09": {
+      "non_perishables": 100,
+      "cereals": 50,
+      "fruits_vegetables": 70,
+      "dairy": 30,
+      "meat": 25
+    },
+    "2024-10": {
+      "non_perishables": 80,
+      "cereals": 40,
+      "fruits_vegetables": 60,
+      "dairy": 25,
+      "meat": 20
+    }
+  }
+}
+
+  ``` 
+
+  	•	Description: Returns the total donations received for each category by month.
+
+5. Get Donations Per Week
+
+	•	Method: GET
+	•	URL: http://127.0.0.1:5000/get_donations_per_week
+	•	Response Example (JSON):
+  ```json
+    {
+  "donations_per_week": {
+    "2024-38": {
+      "non_perishables": 50,
+      "cereals": 25,
+      "fruits_vegetables": 35,
+      "dairy": 15,
+      "meat": 10
+    },
+    "2024-39": {
+      "non_perishables": 30,
+      "cereals": 15,
+      "fruits_vegetables": 20,
+      "dairy": 10,
+      "meat": 5
+    }
+  }
+}
+
+  ``` 
+
+  	•	Description: Returns the total donations received for each category by week (week number based on the year).
