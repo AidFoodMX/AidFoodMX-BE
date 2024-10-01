@@ -218,21 +218,36 @@ def record_donations(data):
         return {"message": "Failed to record donation", "error": str(e)}
     
 # Servicio para obtener las donaciones por mes
-def get_donations_per_month():
+# Servicio para obtener el número de donaciones por mes del año actual
+def get_donations_per_month_of_year():
     try:
-        # Obtener el primer día del mes actual
-        now = datetime.now()
-        first_day_of_month = now.replace(day=1)
-        # Calcular el primer día del próximo mes para obtener un rango
-        next_month = (first_day_of_month + timedelta(days=32)).replace(day=1)
+        # Obtener el año actual
+        current_year = datetime.now().year
+        
+        # Diccionario para almacenar el número de donaciones por mes
+        donations_per_month = defaultdict(int)
+        
+        # Iterar sobre los 12 meses del año
+        for month in range(1, 13):
+            # Obtener el primer día del mes actual
+            start_of_month = datetime(current_year, month, 1)
+            # Obtener el primer día del siguiente mes
+            if month == 12:
+                # Si estamos en diciembre, el siguiente mes es enero del próximo año
+                next_month = datetime(current_year + 1, 1, 1)
+            else:
+                # Si no estamos en diciembre, simplemente obtenemos el primer día del siguiente mes
+                next_month = datetime(current_year, month + 1, 1)
 
-        # Hacer la consulta para obtener las donaciones entre el primer y último día del mes
-        result = supabase.table('donations').select('*').gte('donation_date', first_day_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
-
-        return result.data
+            # Hacer la consulta para obtener las donaciones entre el primer día y el siguiente mes
+            result = supabase.table('donations').select('*').gte('donation_date', start_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
+            
+            # Almacenar el número de donaciones para el mes actual
+            donations_per_month[start_of_month.strftime('%Y-%m')] = len(result.data)
+        
+        return donations_per_month
     except Exception as e:
-        return {"message": "Failed to get donations per month", "error": str(e)}
-    
+        return {"message": "Failed to get donations per month of year", "error": str(e)}
 # Servicio para obtener las donaciones por semana
 def get_donations_per_week():
     try:

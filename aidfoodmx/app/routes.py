@@ -4,7 +4,7 @@ from .services import (
     register_beneficiary_with_region, get_beneficiaries_per_month, get_beneficiaries_per_day,
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
-    get_donations_per_month, get_donations_per_week, update_inventory, record_multiple_donations
+    get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations
 )
 
 def register_routes(app):
@@ -101,7 +101,7 @@ def register_routes(app):
     # Ruta GET para obtener las donaciones por mes
     @app.route('/get_donations_per_month', methods=['GET'])
     def get_donations_per_month_route():
-        donations_per_month = get_donations_per_month()
+        donations_per_month = get_donations_per_month_of_year()
         return jsonify({"donations_per_month": donations_per_month}), 200
 
     # Ruta GET para obtener las donaciones por semana
