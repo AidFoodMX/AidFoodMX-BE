@@ -15,3 +15,16 @@ class FoodPackage:
     info: str  # Información del paquete de comida
     satisfaction_scores: list[int]  # Lista para almacenar los rankings
     date_rated: datetime  # Fecha en la que fue calificado
+    
+    
+
+    ## We are also expecting to create inventory management for the food packages. 
+    
+@dataclass
+class Inventory:
+    non_perishables: int
+    cereals: int
+    fruits_vegetables: int
+    dairy: int
+    meat: int
+    last_updated: datetime  # Keep track of when the inventory was last updated
