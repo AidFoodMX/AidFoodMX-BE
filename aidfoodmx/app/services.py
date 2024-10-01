@@ -52,22 +52,25 @@ def get_beneficiaries_per_day():
 
 # Servicio para registrar un ranking de paquete de comida
 def register_food_package_ranking(data):
-    new_package = {
-        "info": data.get('info'),
-        "date_rated": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat()  # Convert to string
-    }
-
     try:
-        # Check if package already exists
-        package_result = supabase.table('food_packages').select('id').eq('id', data.get('id')).execute()
+        # Check if package already exists by searching for the info
+        package_result = supabase.table('food_packages').select('id').eq('info', data.get('info')).execute()
 
         if not package_result.data:
             # If package doesn't exist, insert it
-            result = supabase.table('food_packages').insert(new_package).execute()
+            new_package = {
+                "info": data.get('info'),
+                "date_rated": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat()  # Convert to string
+            }
+            insert_result = supabase.table('food_packages').insert(new_package).execute()
+            food_package_id = insert_result.data[0]['id']
+        else:
+            # If package exists, get its ID
+            food_package_id = package_result.data[0]['id']
 
         # Insert satisfaction score in food_package_ratings table
         rating_data = {
-            "food_package_id": data.get('id'),
+            "food_package_id": food_package_id,
             "satisfaction_score": data.get('satisfaction')
         }
 
@@ -75,21 +78,38 @@ def register_food_package_ranking(data):
         return {"message": "Rating registered", "rating": result.data}
     except Exception as e:
         return {"message": "Failed to register food package rating", "error": str(e)}
-
+# Servicio para obtener el promedio de satisfacción por paquete mes a mes
+# Servicio para obtener el promedio de satisfacción por paquete mes a mes
 # Servicio para obtener el promedio de satisfacción por paquete mes a mes
 def get_food_package_rankings_per_month():
     rankings_per_month = defaultdict(lambda: defaultdict(list))
 
     try:
+        # Fetch all the ratings
         result = supabase.table('food_package_ratings').select('food_package_id, satisfaction_score, created_at').execute()
 
+        # Process each rating
         for rating in result.data:
-            month = datetime.strptime(rating['created_at'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
-            package_info = supabase.table('food_packages').select('info').eq('id', rating['food_package_id']).execute()
-            avg_satisfaction = rating['satisfaction_score']
-            rankings_per_month[month][package_info.data[0]['info']].append(avg_satisfaction)
+            # Extract the month from the 'created_at' timestamp, accounting for fractional seconds
+            created_at = rating['created_at']
+            try:
+                # Try parsing with fractional seconds (microseconds)
+                timestamp = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S.%f')
+            except ValueError:
+                # Fallback to parsing without fractional seconds
+                timestamp = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S')
 
-        # Calculate average satisfaction for each package per month
+            # Extract the month
+            month = timestamp.strftime('%Y-%m')
+            
+            # Fetch the package info based on 'food_package_id'
+            package_info_result = supabase.table('food_packages').select('info').eq('id', rating['food_package_id']).execute()
+            package_info = package_info_result.data[0]['info'] if package_info_result.data else "Unknown Package"
+            
+            # Add the satisfaction score to the respective month and package
+            rankings_per_month[month][package_info].append(rating['satisfaction_score'])
+
+        # Calculate the average satisfaction for each package per month
         averages_per_month = {
             month: {
                 package_info: sum(scores) / len(scores)
@@ -101,7 +121,6 @@ def get_food_package_rankings_per_month():
         return averages_per_month
     except Exception as e:
         return {"message": "Failed to get food package rankings", "error": str(e)}
-
 # Servicio para obtener las tendencias de beneficiarios por región
 def get_beneficiary_trends_by_region(region, start_date, end_date):
     trends = defaultdict(int)
