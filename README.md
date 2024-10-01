@@ -127,4 +127,56 @@ This section describes the API endpoints for managing inventory and donations.
 
   ``` 
 
+http://127.0.0.1:5000/get_donations_per_month 
+
+http://127.0.0.1:5000/get_donations_per_week
+
+
+http://127.0.0.1:5000/record_donations
+
+input expected: 
+    {
+        "donation_date": "2024-01-10T14:30:00",  
+        "non_perishables": 10,
+        "cereals": 5,
+        "fruits_vegetables": 8,
+        "dairy": 2,
+        "meat": 4
+    }
+
+
+    record multiple donations 
+
+    http://127.0.0.1:5000/record_multiple_donations
+
+    [
+    {
+        "donation_date": "2024-01-10T14:30:00",  
+        "non_perishables": 10,
+        "cereals": 5,
+        "fruits_vegetables": 8,
+        "dairy": 2,
+        "meat": 4
+    },
+    {
+        "donation_date": "2024-02-15T10:00:00", 
+        "non_perishables": 15,
+        "cereals": 8,
+        "fruits_vegetables": 7,
+        "dairy": 3,
+        "meat": 6
+    },
+    {
+        "donation_date": "2024-03-01T12:45:00",  
+        "non_perishables": 12,
+        "cereals": 10,
+        "fruits_vegetables": 15,
+        "dairy": 4,
+        "meat": 5
+    }
+]
+
+
   	•	Description: Returns the total donations received for each category by week (week number based on the year).
+
+
