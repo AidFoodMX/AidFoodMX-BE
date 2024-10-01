@@ -248,3 +248,26 @@ def get_donations_per_week():
         return result.data
     except Exception as e:
         return {"message": "Failed to get donations per week", "error": str(e)}
+    
+# Servicio para registrar múltiples donaciones, cada una con su propia fecha
+def record_multiple_donations(donations):
+    try:
+        # Crear una lista de donaciones a partir de los datos proporcionados
+        donations_to_insert = []
+        for donation in donations:
+            new_donation = {
+                "donation_date": donation.get('donation_date', datetime.now().isoformat()),  # Si no se proporciona, se usa la fecha actual
+                "non_perishables": donation.get('non_perishables', 0),
+                "cereals": donation.get('cereals', 0),
+                "fruits_vegetables": donation.get('fruits_vegetables', 0),
+                "dairy": donation.get('dairy', 0),
+                "meat": donation.get('meat', 0)
+            }
+            donations_to_insert.append(new_donation)
+
+        # Insertar todas las donaciones en un solo comando
+        result = supabase.table('donations').insert(donations_to_insert).execute()
+
+        return {"message": "Multiple donations recorded", "donations": result.data}
+    except Exception as e:
+        return {"message": "Failed to record multiple donations", "error": str(e)}
