@@ -177,6 +177,20 @@ input expected:
 ]
 
 
+
   	•	Description: Returns the total donations received for each category by week (week number based on the year).
+
+
+http://127.0.0.1:5000/register_food_package_ranking
+
+{
+    "info": "Package A",
+    "date": "2024-09-25",
+    "satisfaction": 5
+}
+
+and like this we get 
+http://127.0.0.1:5000/get_food_package_rankings_per_month
+
 
 
