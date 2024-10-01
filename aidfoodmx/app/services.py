@@ -219,20 +219,32 @@ def record_donations(data):
     
 # Servicio para obtener las donaciones por mes
 def get_donations_per_month():
-    current_month = datetime.now().strftime('%Y-%m')
-
     try:
-        result = supabase.table('donations').select('*').ilike('donation_date', f'{current_month}%').execute()
+        # Obtener el primer día del mes actual
+        now = datetime.now()
+        first_day_of_month = now.replace(day=1)
+        # Calcular el primer día del próximo mes para obtener un rango
+        next_month = (first_day_of_month + timedelta(days=32)).replace(day=1)
+
+        # Hacer la consulta para obtener las donaciones entre el primer y último día del mes
+        result = supabase.table('donations').select('*').gte('donation_date', first_day_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
+
         return result.data
     except Exception as e:
         return {"message": "Failed to get donations per month", "error": str(e)}
-
+    
 # Servicio para obtener las donaciones por semana
 def get_donations_per_week():
-    current_week = datetime.now().strftime('%Y-%U')
-
     try:
-        result = supabase.table('donations').select('*').ilike('donation_date', f'{current_week}%').execute()
+        # Obtener el inicio de la semana actual (lunes)
+        now = datetime.now()
+        start_of_week = now - timedelta(days=now.weekday())  # Lunes de esta semana
+        # Obtener el fin de la semana actual (domingo)
+        end_of_week = start_of_week + timedelta(days=6)
+
+        # Hacer la consulta para obtener las donaciones entre el lunes y domingo de la semana actual
+        result = supabase.table('donations').select('*').gte('donation_date', start_of_week.isoformat()).lte('donation_date', end_of_week.isoformat()).execute()
+
         return result.data
     except Exception as e:
         return {"message": "Failed to get donations per week", "error": str(e)}
