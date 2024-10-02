@@ -57,22 +57,29 @@ def register_routes(app):
     # Ejemplo de ruta: "/get_beneficiary_trends_by_region?region=Guadalajara&start_date=2024-01-01&end_date=2024-12-31"
     @app.route('/get_beneficiary_trends_by_region', methods=['GET'])
     def get_beneficiary_trends_by_region_route():
-        region = request.args.get('region')
-        start_date_str = request.args.get('start_date')
-        end_date_str = request.args.get('end_date')
-
-        if not region or not start_date_str or not end_date_str:
-            return jsonify({"error": "Missing required parameters"}), 400
-
         try:
+            # Get the query parameters
+            region = request.args.get('region')
+            start_date_str = request.args.get('start_date')
+            end_date_str = request.args.get('end_date')
+
+            # Validate required parameters
+            if not region or not start_date_str or not end_date_str:
+                return jsonify({"error": "Missing required parameters: region, start_date, or end_date"}), 400
+
+            # Convert the date strings to datetime objects
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
 
-        result = get_beneficiary_trends_by_region(region, start_date, end_date)
-        return jsonify(result), 200
+            # Call the service to get beneficiary trends by region and date range
+            trends = get_beneficiary_trends_by_region(region, start_date, end_date)
 
+            return jsonify(trends), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    if __name__ == '__main__':
+        app.run(debug=True)
     # Ruta GET para predecir el número de beneficiarios en el futuro basado en tendencias pasadas
     # Ejemplo de ruta: "/get_future_beneficiary_predictions?region=Guadalajara&period=3"
     # @app.route('/get_future_beneficiary_predictions', methods=['GET'])

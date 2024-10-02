@@ -383,3 +383,30 @@ example output:
     },
     "region": "Guadalajara"
 }
+
+
+The /get_beneficiary_trends_by_region endpoint retrieves the trends of beneficiaries registered in a specific region over a given time range. It accepts query parameters for the region, start date, and end date, then returns the count of beneficiaries grouped by month within that period.
+
+How It Works:
+
+	•	Input: You provide a region (e.g., “Guadalajara”) and a time range (start and end dates).
+	•	Processing: The system queries the beneficiaries table, filters by region and the provided date range, and groups the results by month.
+	•	Output: A JSON response that contains the count of beneficiaries for each month within the selected period.
+
+Use Cases:
+
+	1.	Regional Analysis: Evaluate the beneficiary trends in different regions to understand where more help is being provided.
+	2.	Time-based Insights: Analyze how the number of beneficiaries changes over time, such as before and after major events or campaigns.
+	3.	Forecasting: Combined with future prediction models, the data can help predict the future needs for beneficiaries in specific regions.
+
+http://127.0.0.1:5000/get_beneficiary_trends_by_region?region=Guadalajara&start_date=2024-01-01&end_date=2024-12-31 
+
+example output: 
+
+{
+    "message": "Beneficiary trends retrieved",
+    "trends": {
+        "2024-01": 2,
+        "2024-09": 3
+    }
+}
