@@ -4,7 +4,7 @@ from .services import (
     register_beneficiary_with_region, get_beneficiaries_per_month, get_beneficiaries_per_day,
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
-    get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations
+    get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries
 )
 
 def register_routes(app):
@@ -116,3 +116,11 @@ def register_routes(app):
         data = request.json  # Esperamos una lista de donaciones
         response = record_multiple_donations(data)
         return jsonify(response), 201
+    
+       
+    # Ruta POST para registrar múltiples beneficiarios
+    @app.route('/register_multiple_beneficiaries', methods=['POST'])
+    def register_multiple_beneficiaries_route():
+        beneficiaries = request.json  # Expecting a list of beneficiaries in JSON format
+        result = register_multiple_beneficiaries(beneficiaries)
+        return jsonify(result), 201

@@ -305,3 +305,24 @@ def record_multiple_donations(donations):
         return {"message": "Multiple donations recorded", "donations": result.data}
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
+    
+# Servicio para registrar múltiples beneficiarios con región
+def register_multiple_beneficiaries(beneficiaries):
+    try:
+        beneficiaries_to_insert = []
+        
+        for data in beneficiaries:
+            new_beneficiary = {
+                "name": data.get('name'),
+                "satisfaction": data.get('satisfaction', 0),
+                "date_registered": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat(),  # Convert to string
+                "region": data.get('region')
+            }
+            beneficiaries_to_insert.append(new_beneficiary)
+
+        # Insert all beneficiaries at once
+        result = supabase.table('beneficiaries').insert(beneficiaries_to_insert).execute()
+        
+        return {"message": "Multiple beneficiaries registered", "beneficiaries": result.data}
+    except Exception as e:
+        return {"message": "Failed to register multiple beneficiaries", "error": str(e)}
