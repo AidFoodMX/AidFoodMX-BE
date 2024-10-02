@@ -193,4 +193,193 @@ and like this we get
 http://127.0.0.1:5000/get_food_package_rankings_per_month
 
 
+Also we have the endpoint to register beneficiaries and multiple beneficiaries 
+here is an example to use the one to register beneficiaries individually 
+http://127.0.0.1:5000/register_beneficiary_with_region
 
+example of body: 
+{
+        "name": "María López",
+        "satisfaction": 4,
+        "date": "2024-02-15",
+        "region": "Querétaro"
+    }
+
+    and this is the one to register multiple beneficiaries: 
+
+    http://127.0.0.1:5000/register_multiple_beneficiaries
+
+    and here is an exampel of an input: [
+    {
+        "name": "Carlos Perez",
+        "satisfaction": 5,
+        "date": "2024-10-01",
+        "region": "Ciudad de México"
+    },
+    {
+        "name": "German nalgotas",
+        "satisfaction": 4,
+        "date": "2024-01-25",
+        "region": "Guadalajara"
+    },
+    {
+        "name": "Luis Martinez",
+        "satisfaction": 3,
+        "date": "2024-10-10",
+        "region": "Monterrey"
+    },
+    {
+        "name": "María López",
+        "satisfaction": 4,
+        "date": "2024-02-15",
+        "region": "Querétaro"
+    },
+    {
+        "name": "Juan Hernandez",
+        "satisfaction": 5,
+        "date": "2024-10-30",
+        "region": "Puebla"
+    },
+    {
+        "name": "Sofia Gutierrez",
+        "satisfaction": 2,
+        "date": "2024-03-05",
+        "region": "León"
+    },
+    {
+        "name": "Miguel Ramirez",
+        "satisfaction": 4,
+        "date": "2024-02-20",
+        "region": "Tijuana"
+    },
+    {
+        "name": "Elena Sanchez",
+        "satisfaction": 3,
+        "date": "2024-02-28",
+        "region": "Toluca"
+    },
+    {
+        "name": "Diego Vargas",
+        "satisfaction": 5,
+        "date": "2024-01-18",
+        "region": "Aguascalientes"
+    },
+    {
+        "name": "Fernanda Morales",
+        "satisfaction": 5,
+        "date": "2024-03-12",
+        "region": "Mérida"
+    }
+] 
+
+
+
+now to get the info of these beneficiaries
+
+this endpoint return us the number of beneficiaties which have been registered each 
+day of the month: 
+http://127.0.0.1:5000/get_beneficiaries_per_day
+
+this one gives us the number of beneficiaries that have been registered each month of hte year: 
+
+http://127.0.0.1:5000/get_beneficiaries_per_month
+
+
+we also have the one to register package rankings of food  
+
+this one: http://127.0.0.1:5000/register_food_package_ranking
+and here is an example of the body: 
+
+{
+        "info": "Package S",
+        "date": "2024-09-19",
+        "satisfaction": 5
+    }
+
+    we can also register multiple packages with this endpoint: 
+    http://127.0.0.1:5000/register_multiple_food_package_rankings
+
+    we can use it like this: 
+    [
+    {
+        "info": "Package A",
+        "date": "2024-09-01",
+        "satisfaction": 5
+    },
+    {
+        "info": "Package B",
+        "date": "2024-09-02",
+        "satisfaction": 4
+    },
+    {
+        "info": "Package C",
+        "date": "2024-09-03",
+        "satisfaction": 3
+    },
+    {
+        "info": "Package D",
+        "date": "2024-09-04",
+        "satisfaction": 5
+    },
+    {
+        "info": "Package E",
+        "date": "2024-09-05",
+        "satisfaction": 2
+    },
+    {
+        "info": "Package F",
+        "date": "2024-09-06",
+        "satisfaction": 4
+    }
+]
+
+
+And using this endpoint, we can see how a package was rated by the community each month.
+http://127.0.0.1:5000/get_food_package_rankings_per_month
+example of output: 
+{
+    "data": {
+        "2024-10": {
+            "Package A": 5.0,
+            "Package A33": 2.0,
+            "Package B": 4.0,
+            "Package C": 3.0,
+            "Package D": 5.0,
+            "Package E": 2.0,
+            "Package F": 4.0,
+            "Package G": 3.0,
+            "Package H": 5.0,
+            "Package I": 2.0,
+            "Package J": 4.0,
+            "Package K": 3.0,
+            "Package L": 5.0,
+            "Package M": 1.0,
+            "Package N": 4.0,
+            "Package O": 2.0,
+            "Package P": 5.0,
+            "Package Q": 3.0,
+            "Package R": 4.0,
+            "Package S": 5.0,
+            "Package T": 2.0
+        }
+    }
+}
+
+
+This endpoint predicts future beneficiaries for a given region over a specified period. It analyzes historical data from the last year to calculate monthly growth rates, then applies these rates to forecast future beneficiaries. The prediction technique uses time-series analysis by calculating the average monthly growth rate and projecting future trends based on these growth patterns.
+
+
+http://127.0.0.1:5000/predict_future_beneficiaries?region=Guadalajara&period=6
+
+example output: 
+
+{
+    "message": "Future beneficiary predictions generated",
+    "predictions": {
+        "2024-11": 5,
+        "2024-12": 12,
+        "2025-01": 18,
+        "2025-03": 41
+    },
+    "region": "Guadalajara"
+}
