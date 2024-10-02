@@ -240,20 +240,24 @@ def get_beneficiary_trends_by_region(region, start_date, end_date):
     trends = defaultdict(int)
 
     try:
-        # Filter beneficiaries by region and date range in the database query
-        result = supabase.table('beneficiaries').select('*').eq('region', region).gte('date_registered', start_date.isoformat()).lte('date_registered', end_date.isoformat()).execute()
+        # Ensure start_date and end_date are properly formatted as strings (ISO 8601)
+        start_date_str = start_date.strftime('%Y-%m-%dT%H:%M:%S')
+        end_date_str = end_date.strftime('%Y-%m-%dT%H:%M:%S')
+
+        # Filter beneficiaries by region and date range using ISO 8601 string format
+        result = supabase.table('beneficiaries').select('*').eq('region', region).gte('date_registered', start_date_str).lte('date_registered', end_date_str).execute()
 
         # Process the result to aggregate beneficiaries by month
         for beneficiary in result.data:
+            # Parse date and group by month (YYYY-MM format)
             month = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
             trends[month] += 1
 
         return {"message": "Beneficiary trends retrieved", "trends": trends}
     except Exception as e:
         return {"message": "Failed to get beneficiary trends", "error": str(e)}
-# Servicio para predecir el número de beneficiarios en el futuro
-
-
+    
+    
 def predict_future_beneficiaries(region, period):
     today = datetime.now()
     one_year_ago = today - timedelta(days=365)
