@@ -18,6 +18,27 @@ def register_beneficiary_with_region(data):
         return {"message": "Beneficiary registered", "beneficiary": result.data}
     except Exception as e:
         return {"message": "Failed to register beneficiary", "error": str(e)}
+    
+    # Servicio para registrar múltiples beneficiarios con región
+def register_multiple_beneficiaries(beneficiaries):
+    try:
+        beneficiaries_to_insert = []
+        
+        for data in beneficiaries:
+            new_beneficiary = {
+                "name": data.get('name'),
+                "satisfaction": data.get('satisfaction', 0),
+                "date_registered": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat(),  # Convert to string
+                "region": data.get('region')
+            }
+            beneficiaries_to_insert.append(new_beneficiary)
+
+        # Insert all beneficiaries at once
+        result = supabase.table('beneficiaries').insert(beneficiaries_to_insert).execute()
+        
+        return {"message": "Multiple beneficiaries registered", "beneficiaries": result.data}
+    except Exception as e:
+        return {"message": "Failed to register multiple beneficiaries", "error": str(e)}
 
 # Servicio para obtener el número de beneficiarios por mes
 def get_beneficiaries_per_month():
@@ -36,12 +57,15 @@ def get_beneficiaries_per_month():
 
 # Servicio para obtener el número de beneficiarios por día en el mes actual
 def get_beneficiaries_per_day():
-    current_month = datetime.now().strftime('%Y-%m')
+    current_month_start = datetime.now().replace(day=1)  # Get the first day of the current month
+    next_month_start = (current_month_start + timedelta(days=32)).replace(day=1)  # Get the first day of the next month
     count_per_day = defaultdict(int)
 
     try:
-        result = supabase.table('beneficiaries').select('*').ilike('date_registered', f'{current_month}%').execute()
+        # Fetch all beneficiaries registered between the first day of the current month and the first day of the next month
+        result = supabase.table('beneficiaries').select('*').gte('date_registered', current_month_start.isoformat()).lt('date_registered', next_month_start.isoformat()).execute()
 
+        # Process each beneficiary
         for beneficiary in result.data:
             day = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d')
             count_per_day[day] += 1
@@ -49,7 +73,6 @@ def get_beneficiaries_per_day():
         return count_per_day
     except Exception as e:
         return {"message": "Failed to get beneficiaries per day", "error": str(e)}
-
 # Servicio para registrar un ranking de paquete de comida
 def register_food_package_ranking(data):
     try:
@@ -306,23 +329,3 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
-# Servicio para registrar múltiples beneficiarios con región
-def register_multiple_beneficiaries(beneficiaries):
-    try:
-        beneficiaries_to_insert = []
-        
-        for data in beneficiaries:
-            new_beneficiary = {
-                "name": data.get('name'),
-                "satisfaction": data.get('satisfaction', 0),
-                "date_registered": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat(),  # Convert to string
-                "region": data.get('region')
-            }
-            beneficiaries_to_insert.append(new_beneficiary)
-
-        # Insert all beneficiaries at once
-        result = supabase.table('beneficiaries').insert(beneficiaries_to_insert).execute()
-        
-        return {"message": "Multiple beneficiaries registered", "beneficiaries": result.data}
-    except Exception as e:
-        return {"message": "Failed to register multiple beneficiaries", "error": str(e)}
