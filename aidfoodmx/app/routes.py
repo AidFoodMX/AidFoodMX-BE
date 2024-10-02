@@ -61,28 +61,37 @@ def register_routes(app):
         start_date_str = request.args.get('start_date')
         end_date_str = request.args.get('end_date')
 
-        # Validate that the required parameters are present
         if not region or not start_date_str or not end_date_str:
-            return jsonify({"error": "Missing required parameters: 'region', 'start_date', or 'end_date'"}), 400
+            return jsonify({"error": "Missing required parameters"}), 400
 
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
         except ValueError:
-            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD"}), 400
 
-        data = get_beneficiary_trends_by_region(region, start_date, end_date)
-        return jsonify({"data": data}), 200
+        result = get_beneficiary_trends_by_region(region, start_date, end_date)
+        return jsonify(result), 200
 
     # Ruta GET para predecir el número de beneficiarios en el futuro basado en tendencias pasadas
     # Ejemplo de ruta: "/get_future_beneficiary_predictions?region=Guadalajara&period=3"
-    @app.route('/get_future_beneficiary_predictions', methods=['GET'])
-    def get_future_beneficiary_predictions_route():
-        region = request.args.get('region')
-        period = int(request.args.get('period', 3))  # Default a 3 meses
-        predictions = predict_future_beneficiaries(region, period)
-        return jsonify({"predictions": predictions}), 200
+    # @app.route('/get_future_beneficiary_predictions', methods=['GET'])
+    # def get_future_beneficiary_predictions_route():
+    #     region = request.args.get('region')
+    #     period = int(request.args.get('period', 3))  # Default a 3 meses
+    #     predictions = predict_future_beneficiaries(region, period)
+    #     return jsonify({"predictions": predictions}), 200
 
+    @app.route('/predict_future_beneficiaries', methods=['GET'])
+    def predict_future_beneficiaries_route():
+        region = request.args.get('region')
+        period = int(request.args.get('period', 3))  # Default period of 3 months
+
+        if not region:
+            return jsonify({"error": "Region is required"}), 400
+
+        result = predict_future_beneficiaries(region, period)
+        return jsonify(result), 200
     # Ruta POST para actualizar el inventario
     @app.route('/update_inventory', methods=['POST'])
     def update_inventory_route():

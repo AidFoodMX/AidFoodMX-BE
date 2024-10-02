@@ -235,42 +235,61 @@ def get_food_package_rankings_per_month():
     except Exception as e:
         return {"message": "Failed to get food package rankings", "error": str(e)}
 # Servicio para obtener las tendencias de beneficiarios por región
+
 def get_beneficiary_trends_by_region(region, start_date, end_date):
     trends = defaultdict(int)
 
     try:
-        result = supabase.table('beneficiaries').select('*').eq('region', region).execute()
+        # Filter beneficiaries by region and date range in the database query
+        result = supabase.table('beneficiaries').select('*').eq('region', region).gte('date_registered', start_date.isoformat()).lte('date_registered', end_date.isoformat()).execute()
 
+        # Process the result to aggregate beneficiaries by month
         for beneficiary in result.data:
-            if start_date <= datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S') <= end_date:
-                month = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
-                trends[month] += 1
+            month = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
+            trends[month] += 1
 
-        return trends
+        return {"message": "Beneficiary trends retrieved", "trends": trends}
     except Exception as e:
         return {"message": "Failed to get beneficiary trends", "error": str(e)}
-
 # Servicio para predecir el número de beneficiarios en el futuro
+
+
 def predict_future_beneficiaries(region, period):
     today = datetime.now()
     one_year_ago = today - timedelta(days=365)
 
     try:
-        trends = get_beneficiary_trends_by_region(region, one_year_ago, today)
-        monthly_counts = list(trends.values())
+        # Query to get beneficiaries data by region from the last year
+        result = supabase.table('beneficiaries').select('date_registered').eq('region', region).gte('date_registered', one_year_ago.isoformat()).execute()
+
+        # Check if we have any data for that region
+        if not result.data:
+            return {"error": f"No historical data available for region '{region}'"}
+
+        monthly_counts = defaultdict(int)
+
+        # Calculate the number of beneficiaries registered per month
+        for beneficiary in result.data:
+            month = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
+            monthly_counts[month] += 1
 
         if len(monthly_counts) < 2:
-            return {"error": "No hay suficientes datos históricos para predecir."}
+            return {"error": "Not enough historical data to predict future beneficiaries."}
 
-        growth_rates = [
-            (monthly_counts[i] - monthly_counts[i - 1]) / monthly_counts[i - 1]
-            for i in range(1, len(monthly_counts))
-            if monthly_counts[i - 1] > 0
-        ]
+        # Calculate monthly growth rates
+        sorted_months = sorted(monthly_counts.keys())
+        growth_rates = []
+        for i in range(1, len(sorted_months)):
+            prev_month = sorted_months[i - 1]
+            curr_month = sorted_months[i]
+            if monthly_counts[prev_month] > 0:
+                growth_rate = (monthly_counts[curr_month] - monthly_counts[prev_month]) / monthly_counts[prev_month]
+                growth_rates.append(growth_rate)
 
         avg_growth_rate = sum(growth_rates) / len(growth_rates) if growth_rates else 0
 
-        last_month_count = monthly_counts[-1]
+        # Predict future beneficiaries for the next 'period' months
+        last_month_count = monthly_counts[sorted_months[-1]]
         predictions = {}
 
         for i in range(1, period + 1):
@@ -278,10 +297,53 @@ def predict_future_beneficiaries(region, period):
             last_month_count += math.ceil(last_month_count * avg_growth_rate)
             predictions[next_month] = last_month_count
 
-        return predictions
+        return {"message": "Future beneficiary predictions generated", "predictions": predictions, "region": region}
     except Exception as e:
         return {"message": "Failed to predict future beneficiaries", "error": str(e)}
-    
+    today = datetime.now()
+    one_year_ago = today - timedelta(days=365)
+
+    try:
+        # Query to get beneficiaries data by region from the last year
+        result = supabase.table('beneficiaries').select('date_registered').eq('region', region).gte('date_registered', one_year_ago.isoformat()).execute()
+
+        if not result.data:
+            return {"error": f"No historical data available for region '{region}'"}
+
+        monthly_counts = defaultdict(int)
+
+        # Calculate the number of beneficiaries registered per month
+        for beneficiary in result.data:
+            month = datetime.strptime(beneficiary['date_registered'], '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m')
+            monthly_counts[month] += 1
+
+        if len(monthly_counts) < 2:
+            return {"error": "Not enough historical data to predict future beneficiaries."}
+
+        # Calculate monthly growth rates
+        sorted_months = sorted(monthly_counts.keys())
+        growth_rates = []
+        for i in range(1, len(sorted_months)):
+            prev_month = sorted_months[i - 1]
+            curr_month = sorted_months[i]
+            if monthly_counts[prev_month] > 0:
+                growth_rate = (monthly_counts[curr_month] - monthly_counts[prev_month]) / monthly_counts[prev_month]
+                growth_rates.append(growth_rate)
+
+        avg_growth_rate = sum(growth_rates) / len(growth_rates) if growth_rates else 0
+
+        # Predict future beneficiaries for the next 'period' months
+        last_month_count = monthly_counts[sorted_months[-1]]
+        predictions = {}
+
+        for i in range(1, period + 1):
+            next_month = (today + timedelta(days=30 * i)).strftime('%Y-%m')
+            last_month_count += math.ceil(last_month_count * avg_growth_rate)
+            predictions[next_month] = last_month_count
+
+        return {"message": "Future beneficiary predictions generated", "predictions": predictions, "region": region}
+    except Exception as e:
+        return {"message": "Failed to predict future beneficiaries", "error": str(e)} 
 def update_inventory(data):
     # Prepare the inventory update, converting datetime to a string
     inventory_update = {
