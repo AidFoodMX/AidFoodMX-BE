@@ -74,36 +74,126 @@ def get_beneficiaries_per_day():
     except Exception as e:
         return {"message": "Failed to get beneficiaries per day", "error": str(e)}
 # Servicio para registrar un ranking de paquete de comida
+
 def register_food_package_ranking(data):
     try:
-        # Check if package already exists by searching for the info
+        # Step 1: Check if the package already exists by searching for the info
         package_result = supabase.table('food_packages').select('id').eq('info', data.get('info')).execute()
 
-        if not package_result.data:
-            # If package doesn't exist, insert it
+        # Step 2: If package doesn't exist, insert it
+        if package_result.data == []:
             new_package = {
                 "info": data.get('info'),
                 "date_rated": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat()  # Convert to string
             }
             insert_result = supabase.table('food_packages').insert(new_package).execute()
+
+            # Check for errors in the insert operation
+            if 'error' in insert_result:
+                return {"message": "Failed to insert food package", "error": insert_result['error']}
+
+            # Get the newly inserted package ID
             food_package_id = insert_result.data[0]['id']
         else:
-            # If package exists, get its ID
+            # If the package exists, retrieve its ID
             food_package_id = package_result.data[0]['id']
 
-        # Insert satisfaction score in food_package_ratings table
+        # Step 3: Insert the satisfaction score into the 'food_package_ratings' table
         rating_data = {
             "food_package_id": food_package_id,
             "satisfaction_score": data.get('satisfaction')
         }
 
-        result = supabase.table('food_package_ratings').insert(rating_data).execute()
-        return {"message": "Rating registered", "rating": result.data}
+        rating_result = supabase.table('food_package_ratings').insert(rating_data).execute()
+
+        # Check for errors in the rating insert
+        if 'error' in rating_result:
+            return {"message": "Failed to insert food package rating", "error": rating_result['error']}
+
+        return {"message": "Rating registered successfully", "rating": rating_result.data}
+
     except Exception as e:
         return {"message": "Failed to register food package rating", "error": str(e)}
+
+
+def register_multiple_food_package_rankings(rankings):
+    try:
+        rankings_to_insert = []
+
+        for ranking in rankings:
+            # Check if package already exists by searching for the info
+            package_result = supabase.table('food_packages').select('id').eq('info', ranking.get('info')).execute()
+
+            if package_result.data == []:
+                # If package doesn't exist, insert it
+                new_package = {
+                    "info": ranking.get('info'),
+                    "date_rated": datetime.strptime(ranking.get('date'), '%Y-%m-%d').isoformat()  # Convert to string
+                }
+                insert_result = supabase.table('food_packages').insert(new_package).execute()
+
+                # Check for errors during insertion
+                if 'error' in insert_result:
+                    return {"message": "Failed to insert food package", "error": insert_result['error']}
+
+                # Get the newly inserted package ID
+                food_package_id = insert_result.data[0]['id']
+            else:
+                # If package exists, get its ID
+                food_package_id = package_result.data[0]['id']
+
+            # Prepare satisfaction score data
+            rating_data = {
+                "food_package_id": food_package_id,
+                "satisfaction_score": ranking.get('satisfaction')
+            }
+            rankings_to_insert.append(rating_data)
+
+        # Insert all rankings at once
+        result = supabase.table('food_package_ratings').insert(rankings_to_insert).execute()
+
+        # Check for errors during insertion
+        if 'error' in result:
+            return {"message": "Failed to insert food package rankings", "error": result['error']}
+
+        return {"message": "Multiple food package rankings registered successfully", "rankings": result.data}
+
+    except Exception as e:
+        return {"message": "Failed to register multiple food package rankings", "error": str(e)}
+    try:
+        rankings_to_insert = []
+        
+        for ranking in rankings:
+            # Check if package already exists by searching for the info
+            package_result = supabase.table('food_packages').select('id').eq('info', ranking.get('info')).execute()
+
+            if not package_result.data:
+                # If package doesn't exist, insert it
+                new_package = {
+                    "info": ranking.get('info'),
+                    "date_rated": datetime.strptime(ranking.get('date'), '%Y-%m-%d').isoformat()  # Convert to string
+                }
+                insert_result = supabase.table('food_packages').insert(new_package).execute()
+                food_package_id = insert_result.data[0]['id']
+            else:
+                # If package exists, get its ID
+                food_package_id = package_result.data[0]['id']
+
+            # Prepare satisfaction score data
+            rating_data = {
+                "food_package_id": food_package_id,
+                "satisfaction_score": ranking.get('satisfaction')
+            }
+            rankings_to_insert.append(rating_data)
+
+        # Insert all rankings at once
+        result = supabase.table('food_package_ratings').insert(rankings_to_insert).execute()
+
+        return {"message": "Multiple food package rankings registered", "rankings": result.data}
+    except Exception as e:
+        return {"message": "Failed to register multiple food package rankings", "error": str(e)}
 # Servicio para obtener el promedio de satisfacción por paquete mes a mes
-# Servicio para obtener el promedio de satisfacción por paquete mes a mes
-# Servicio para obtener el promedio de satisfacción por paquete mes a mes
+
 def get_food_package_rankings_per_month():
     rankings_per_month = defaultdict(lambda: defaultdict(list))
 
