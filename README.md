@@ -5,13 +5,105 @@
 
 Este es el backend del proyecto **AidfoodMx**, que utiliza Flask para gestionar la lógica y las API que interactúan con los beneficiarios de BAMX. El proyecto permite registrar beneficiarios, analizar su satisfacción y gestionar las tandas de donaciones.
 
-## Requerimientos
+Here’s a section you can add to your `README.md` for running the project and setting up the dependencies:
 
-Para ejecutar este proyecto localmente, necesitarás tener instalados los siguientes programas:
+---
 
-- **Python 3.8+**
-- **pip** (el gestor de paquetes de Python)
-- Un entorno virtual de Python (recomendado)
+## Getting Started
+
+### Prerequisites
+
+Ensure you have Python installed on your system. You can verify it by running the following command:
+
+```bash
+python --version
+```
+
+If Python is not installed, download and install it from the official [Python website](https://www.python.org/downloads/).
+
+### Setting Up the Environment
+
+1. **Clone the Repository:**
+
+   First, clone this repository to your local machine:
+
+   ```bash
+   git clone <repository_url>
+   ```
+
+2. **Navigate to the Project Directory:**
+
+   Move into the project's root directory:
+
+   ```bash
+   cd <project_directory>
+   ```
+
+3. **Create and Activate a Virtual Environment (Optional but recommended):**
+
+   It’s recommended to use a virtual environment to isolate your project dependencies.
+
+   - **Create a virtual environment**:
+     ```bash
+     python -m venv venv
+     ```
+
+   - **Activate the virtual environment**:
+     - On Windows:
+       ```bash
+       venv\Scripts\activate
+       ```
+     - On macOS and Linux:
+       ```bash
+       source venv/bin/activate
+       ```
+
+4. **Install Dependencies:**
+
+   After activating the virtual environment, install all required dependencies listed in the `requirements.txt` file:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   Additionally, if you need `beautifulsoup4` and it’s not listed in the `requirements.txt`, you can install it using:
+
+   ```bash
+   pip install beautifulsoup4
+   ```
+
+### Running the Project
+
+1. **Start the Flask Application:**
+
+   To run the Flask application, use the following command:
+
+   ```bash
+   flask run
+   ```
+
+   Alternatively, if the project has a custom `app.py` or `main.py`, you can run it directly:
+
+   ```bash
+   python app.py
+   ```
+
+2. **Access the API:**
+
+   Once the server is running, you can access the endpoints using the following URL format:
+
+   ```
+   http://127.0.0.1:5000/<endpoint>
+   ```
+
+   For example:
+   ```
+   http://127.0.0.1:5000/predict_future_beneficiaries?region=Guadalajara&period=6
+   ```
+
+---
+
+This should provide the necessary steps to set up and run the project on a new system. Let me know if you need any adjustments!)
 
 ## Ejemplos de uso de los endpoints
 
