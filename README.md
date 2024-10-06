@@ -1,4 +1,3 @@
-Aquí te mando el contenido formateado sin eliminar ninguna información. Solo lo he mejorado ligeramente para que sea más fácil de leer y copiar:
 
 ---
 
