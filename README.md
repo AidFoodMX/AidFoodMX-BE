@@ -1,4 +1,4 @@
-Here is your formatted text for easy copy-pasting into a document:
+Aquí te mando el contenido formateado sin eliminar ninguna información. Solo lo he mejorado ligeramente para que sea más fácil de leer y copiar:
 
 ---
 
@@ -20,7 +20,9 @@ Para ejecutar este proyecto localmente, necesitarás tener instalados los siguie
 
 Esta sección describe los endpoints de la API para gestionar inventario y donaciones.
 
-### 1. Update Inventory
+---
+
+### 1. **Update Inventory**
 
 - **Método:** `POST`
 - **URL:** `http://127.0.0.1:5000/update_inventory`
@@ -38,7 +40,9 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
   **Descripción:** Actualiza el inventario actual agregando las cantidades especificadas de cada categoría de artículos (no perecederos, cereales, frutas y verduras, lácteos y carne).
 
-### 2. Record Donations
+---
+
+### 2. **Record Donations**
 
 - **Método:** `POST`
 - **URL:** `http://127.0.0.1:5000/record_donations`
@@ -56,7 +60,9 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
   **Descripción:** Registra las donaciones recibidas y actualiza el conteo de donaciones del mes y la semana según la fecha de la solicitud.
 
-### 3. Get Total Inventory
+---
+
+### 3. **Get Total Inventory**
 
 - **Método:** `GET`
 - **URL:** `http://127.0.0.1:5000/get_total_inventory`
@@ -77,7 +83,9 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
   **Descripción:** Recupera el inventario total actual de cada categoría de artículos (no perecederos, cereales, frutas y verduras, lácteos y carne).
 
-### 4. Get Donations Per Month
+---
+
+### 4. **Get Donations Per Month**
 
 - **Método:** `GET`
 - **URL:** `http://127.0.0.1:5000/get_donations_per_month`
@@ -106,7 +114,9 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
   **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
 
-### 5. Get Donations Per Week
+---
+
+### 5. **Get Donations Per Week**
 
 - **Método:** `GET`
 - **URL:** `http://127.0.0.1:5000/get_donations_per_week`
@@ -133,9 +143,11 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   }
   ```
 
-**Descripción:** Devuelve las donaciones recibidas por semana (número de semana basado en el año).
+  **Descripción:** Devuelve las donaciones recibidas por semana (número de semana basado en el año).
 
-### Recordar múltiples donaciones
+---
+
+### **Recordar múltiples donaciones**
 
 - **URL:** `http://127.0.0.1:5000/record_multiple_donations`
 - **Body Example (JSON):**
@@ -169,11 +181,13 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   ]
   ```
 
-**Descripción:** Registra múltiples donaciones con una sola solicitud.
+  **Descripción:** Registra múltiples donaciones con una sola solicitud.
 
-### Registrar Beneficiarios
+---
 
-#### Registrar un beneficiario individual
+### **Registrar Beneficiarios**
+
+#### **Registrar un beneficiario individual**
 
 - **URL:** `http://127.0.0.1:5000/register_beneficiary_with_region`
 - **Body Example (JSON):**
@@ -187,7 +201,9 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   }
   ```
 
-#### Registrar múltiples beneficiarios
+---
+
+#### **Registrar múltiples beneficiarios**
 
 - **URL:** `http://127.0.0.1:5000/register_multiple_beneficiaries`
 - **Body Example (JSON):**
@@ -211,21 +227,67 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
       "satisfaction": 3,
       "date": "2024-10-10",
       "region": "Monterrey"
+    },
+    {
+      "name": "María López",
+      "satisfaction": 4,
+      "date": "2024-02-15",
+      "region": "Querétaro"
+    },
+    {
+      "name": "Juan Hernandez",
+      "satisfaction": 5,
+      "date": "2024-10-30",
+      "region": "Puebla"
+    },
+    {
+      "name": "Sofia Gutierrez",
+      "satisfaction": 2,
+      "date": "2024-03-05",
+      "region": "León"
+    },
+    {
+      "name": "Miguel Ramirez",
+      "satisfaction": 4,
+      "date": "2024-02-20",
+      "region": "Tijuana"
+    },
+    {
+      "name": "Elena Sanchez",
+      "satisfaction": 3,
+      "date": "2024-02-28",
+      "region": "Toluca"
+    },
+    {
+      "name": "Diego Vargas",
+      "satisfaction": 5,
+      "date": "2024-01-18",
+      "region": "Aguascalientes"
+    },
+    {
+      "name": "Fernanda Morales",
+      "satisfaction": 5,
+      "date": "2024-03-12",
+      "region": "Mérida"
     }
   ]
   ```
 
-### Obtener información de beneficiarios
+---
 
-#### Número de beneficiarios por día
+### **Obtener información de beneficiarios**
+
+#### **Número de beneficiarios por día**
 
 - **URL:** `http://127.0.0.1:5000/get_beneficiaries_per_day`
 
-#### Número de beneficiarios por mes
+#### **Número de beneficiarios por mes**
 
 - **URL:** `http://127.0.0.1:5000/get_beneficiaries_per_month`
 
-### Registrar ranking de paquetes de alimentos
+---
+
+### **Registrar ranking de paquetes de alimentos**
 
 - **URL:** `http://127.0.0.1:5000/register_food_package_ranking`
 - **Body Example (JSON):**
@@ -238,7 +300,7 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   }
   ```
 
-#### Registrar múltiples rankings de paquetes de alimentos
+#### **Registrar múltiples rankings de paquetes de alimentos**
 
 - **URL:** `http://127.0.0.1:5000/register_multiple_food_package_rankings`
 - **Body Example (JSON):**
@@ -259,18 +321,53 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
       "info": "Package C",
       "date": "2024-09-03",
       "satisfaction": 3
+    },
+    {
+      "info": "Package D",
+      "date": "2024-09-04",
+      "satisfaction": 5
+    },
+    {
+      "info": "Package E",
+      "date": "2024-09-05",
+      "satisfaction": 2
+    },
+    {
+      "info": "Package F",
+      "date": "2024-09-06",
+      "satisfaction": 4
     }
   ]
   ```
 
-### Obtener ranking de paquetes por mes
+---
+
+### **Obtener ranking de paquetes por mes**
 
 - **URL:** `http://127.0.0.1:5000/get_food_package_rankings_per_month`
+- **Response Example (JSON):**
 
-### Predecir futuros beneficiarios
+  ```json
+  {
+    "data": {
+      "2024-10": {
+        "Package A": 5.0,
+        "Package B": 4.0,
+        "Package C": 3.0,
+        "Package D": 5.0,
+        "Package E": 2.0,
+        "Package F": 4.0
+      }
+    }
+  }
+  ```
+
+---
+
+### **Predecir futuros beneficiarios**
 
 - **URL:** `http://127.0.0.1:5000/predict_future_beneficiaries?region=Guadalajara&period=6`
-- **Output Example (JSON):**
+- **Response Example (JSON):**
 
   ```json
   {
@@ -285,10 +382,12 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   }
   ```
 
-### Obtener tendencias de beneficiarios por región
+---
+
+### **Obtener tendencias de beneficiarios por región**
 
 - **URL:** `http://127.0.0.1:5000/get_beneficiary_trends_by_region?region=Guadalajara&start_date=2024-01-01&end_date=2024-12-31`
-- **Output Example (JSON):**
+- **Response Example (JSON):**
 
   ```json
   {
@@ -302,4 +401,3 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
 ---
 
-Feel free to copy and paste this into your document!
