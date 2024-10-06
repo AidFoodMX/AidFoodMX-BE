@@ -28,7 +28,7 @@ If Python is not installed, download and install it from the official [Python we
    First, clone this repository to your local machine:
 
    ```bash
-   git clone <repository_url>
+git clone https://github.com/AidFoodMX/AidFoodMX-BE
    ```
 
 2. **Navigate to the Project Directory:**
@@ -36,16 +36,20 @@ If Python is not installed, download and install it from the official [Python we
    Move into the project's root directory:
 
    ```bash
-   cd <project_directory>
+cd AidFoodMX-BE
    ```
+
+      ```bash
+cd aidFoodmx   
+   ```
+
 
 3. **Create and Activate a Virtual Environment (Optional but recommended):**
 
-   It’s recommended to use a virtual environment to isolate your project dependencies.
 
    - **Create a virtual environment**:
      ```bash
-     python -m venv venv
+python3 -m venv venv
      ```
 
    - **Activate the virtual environment**:
@@ -55,7 +59,7 @@ If Python is not installed, download and install it from the official [Python we
        ```
      - On macOS and Linux:
        ```bash
-       source venv/bin/activate
+source venv/bin/activate
        ```
 
 4. **Install Dependencies:**
@@ -66,11 +70,9 @@ If Python is not installed, download and install it from the official [Python we
    pip install -r requirements.txt
    ```
 
-   Additionally, if you need `beautifulsoup4` and it’s not listed in the `requirements.txt`, you can install it using:
+   Additionally, do not forget add the .env
 
-   ```bash
-   pip install beautifulsoup4
-   ```
+
 
 ### Running the Project
 
