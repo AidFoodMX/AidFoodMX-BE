@@ -209,7 +209,73 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
 ---
 
-### 5. **Get Donations Per Week**
+### 5. **Get Donations Per Month**
+
+- **Método:** `GET`
+- **URL:** `http://127.0.0.1:5000/get_kind_of_donations_per_month`
+- **Response Example (JSON):**
+
+  ```json
+   {
+    "donations_per_month": {
+        "2024-04": {
+            "cereals": 7,
+            "dairy": 4,
+            "fruits_vegetables": 10,
+            "meat": 3,
+            "non_perishables": 15
+        },
+        "2024-05": {
+            "cereals": 3,
+            "dairy": 2,
+            "fruits_vegetables": 6,
+            "meat": 4,
+            "non_perishables": 7
+        },
+        "2024-06": {
+            "cereals": 5,
+            "dairy": 1,
+            "fruits_vegetables": 8,
+            "meat": 5,
+            "non_perishables": 9
+        },
+        "2024-07": {
+            "cereals": 6,
+            "dairy": 3,
+            "fruits_vegetables": 7,
+            "meat": 6,
+            "non_perishables": 11
+        },
+        "2024-08": {
+            "cereals": 8,
+            "dairy": 5,
+            "fruits_vegetables": 9,
+            "meat": 7,
+            "non_perishables": 14
+        },
+        "2024-09": {
+            "cereals": 3,
+            "dairy": 2,
+            "fruits_vegetables": 5,
+            "meat": 3,
+            "non_perishables": 6
+        },
+        "2024-10": {
+            "cereals": 24,
+            "dairy": 14,
+            "fruits_vegetables": 45,
+            "meat": 17,
+            "non_perishables": 48
+        }
+    }
+} 
+  ```
+
+  **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
+
+---
+
+### 6. **Get Donations Per Week**
 
 - **Método:** `GET`
 - **URL:** `http://127.0.0.1:5000/get_donations_per_week`
