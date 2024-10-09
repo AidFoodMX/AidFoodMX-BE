@@ -4,7 +4,8 @@ from .services import (
     register_beneficiary_with_region, get_beneficiaries_per_month, get_beneficiaries_per_day,
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
-    get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries, register_multiple_food_package_rankings
+    get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries, register_multiple_food_package_rankings,
+    get_kind_of_donations_per_month, generate_insights, get_all_regions
 )
 
 def register_routes(app):
@@ -141,7 +142,11 @@ def register_routes(app):
         data = request.json  # Esperamos una lista de donaciones
         response = record_multiple_donations(data)
         return jsonify(response), 201
-    
+    @app.route('/get_kind_of_donations_per_month', methods=['GET'])
+    def get_kind_of_donations_per_month_route():
+        data = get_kind_of_donations_per_month()
+        return jsonify(data), 200
+        
        
     # Ruta POST para registrar múltiples beneficiarios
     @app.route('/register_multiple_beneficiaries', methods=['POST'])
@@ -149,3 +154,32 @@ def register_routes(app):
         beneficiaries = request.json  # Expecting a list of beneficiaries in JSON format
         result = register_multiple_beneficiaries(beneficiaries)
         return jsonify(result), 201
+    
+    @app.route('/generate_insights', methods=['POST'])
+    def insights_endpoint():
+        try:
+            # Extract region from the request JSON body
+            data = request.get_json()
+            region = data.get('region')
+
+            # Call the service to generate insights
+            insights = generate_insights(region)
+
+            return jsonify({
+                "message": "Insights generated",
+                "insights": insights
+            })
+        except Exception as e:
+            return jsonify({
+                "message": "Failed to generate insights",
+                "error": str(e)
+            }), 500
+            
+    @app.route('/get_regions', methods=['GET'])
+    def get_regions():
+        try:
+            # Call the service to fetch all regions
+            response = get_all_regions()
+            return jsonify(response), 200
+        except Exception as e:
+            return jsonify({"error": str(e), "message": "Failed to get regions"}), 500

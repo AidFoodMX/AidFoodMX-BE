@@ -29,17 +29,19 @@ If Python is not installed, download and install it from the official [Python we
 
    ```bash
 git clone https://github.com/AidFoodMX/AidFoodMX-BE
-   ```
+   ```   ````
 
 2. **Navigate to the Project Directory:**
 
    Move into the project's root directory:
 
-   ```bash
+
+   ````
+```bash
 cd AidFoodMX-BE
    ```
 
-      ```bash
+```bash
 cd aidFoodmx   
    ```
 
@@ -54,15 +56,15 @@ python3 -m venv venv
 
    - **Activate the virtual environment**:
      - On Windows:
-       ```bash
-       venv\Scripts\activate
-       ```
-     - On macOS and Linux:
-       ```bash
-source venv/bin/activate
-       ```
 
-4. **Install Dependencies:**
+       venv\Scripts\activate
+
+     - On macOS and Linux:
+
+      source venv/bin/activate
+
+
+1. **Install Dependencies:**
 
    After activating the virtual environment, install all required dependencies listed in the `requirements.txt` file:
 
@@ -185,31 +187,95 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 - **Response Example (JSON):**
 
   ```json
-  {
-    "donations_per_month": {
-      "2024-09": {
-        "non_perishables": 100,
-        "cereals": 50,
-        "fruits_vegetables": 70,
-        "dairy": 30,
-        "meat": 25
-      },
-      "2024-10": {
-        "non_perishables": 80,
-        "cereals": 40,
-        "fruits_vegetables": 60,
-        "dairy": 25,
-        "meat": 20
-      }
-    }
-  }
+    {
+       "donations_per_month": {
+           "2024-01": 5,
+           "2024-02": 5,
+           "2024-03": 5,
+           "2024-04": 1,
+           "2024-05": 1,
+           "2024-06": 1,
+           "2024-07": 1,
+           "2024-08": 1,
+           "2024-09": 1,
+           "2024-10": 5,
+           "2024-11": 0,
+           "2024-12": 0
+       }
+   }
   ```
 
   **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
 
 ---
 
-### 5. **Get Donations Per Week**
+### 5. **Get Donations Per Month**
+
+- **Método:** `GET`
+- **URL:** `http://127.0.0.1:5000/get_kind_of_donations_per_month`
+- **Response Example (JSON):**
+
+  ```json
+   {
+    "donations_per_month": {
+        "2024-04": {
+            "cereals": 7,
+            "dairy": 4,
+            "fruits_vegetables": 10,
+            "meat": 3,
+            "non_perishables": 15
+        },
+        "2024-05": {
+            "cereals": 3,
+            "dairy": 2,
+            "fruits_vegetables": 6,
+            "meat": 4,
+            "non_perishables": 7
+        },
+        "2024-06": {
+            "cereals": 5,
+            "dairy": 1,
+            "fruits_vegetables": 8,
+            "meat": 5,
+            "non_perishables": 9
+        },
+        "2024-07": {
+            "cereals": 6,
+            "dairy": 3,
+            "fruits_vegetables": 7,
+            "meat": 6,
+            "non_perishables": 11
+        },
+        "2024-08": {
+            "cereals": 8,
+            "dairy": 5,
+            "fruits_vegetables": 9,
+            "meat": 7,
+            "non_perishables": 14
+        },
+        "2024-09": {
+            "cereals": 3,
+            "dairy": 2,
+            "fruits_vegetables": 5,
+            "meat": 3,
+            "non_perishables": 6
+        },
+        "2024-10": {
+            "cereals": 24,
+            "dairy": 14,
+            "fruits_vegetables": 45,
+            "meat": 17,
+            "non_perishables": 48
+        }
+    }
+} 
+  ```
+
+  **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
+
+---
+
+### 6. **Get Donations Per Week**
 
 - **Método:** `GET`
 - **URL:** `http://127.0.0.1:5000/get_donations_per_week`
@@ -456,7 +522,6 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   ```
 
 ---
-Here’s an explanation of what each of these endpoints does and why they are useful:
 
 ### **Predecir futuros beneficiarios** (`predict_future_beneficiaries`)
 
@@ -481,3 +546,149 @@ Here’s an explanation of what each of these endpoints does and why they are us
   Understanding historical trends helps organizations to identify patterns in demand for assistance across different times of the year. This enables them to be better prepared during peak months when more people may need aid and can also inform strategic decisions, such as increasing outreach in underperforming months.
 
 ---
+
+
+Here is a section you can add to your README file to explain how to use the new /generate_insights endpoint:
+
+Generate Insights Endpoint
+
+Overview
+
+The /generate_insights endpoint leverages the data from beneficiary trends, donation patterns, current inventory status, and food package satisfaction rankings to provide short, valuable insights into the current state and future trends for a specific region. This information can help the organization make data-driven decisions and optimize resources in various regions.
+
+How to Use the Endpoint
+
+Endpoint URL: http://127.0.0.1:5000/generate_insights
+
+Method: POST
+
+Request Body:
+This endpoint expects a JSON object with the following structure:
+
+{
+    "region": "Guadalajara"
+}
+
+	•	region (required): The region for which you want to generate insights. Example: "Guadalajara".
+
+Example Request
+
+Here’s how you would call this endpoint in Postman or similar tools:
+
+POST: http://127.0.0.1:5000/generate_insights
+
+Request Body:
+
+{
+    "region": "Guadalajara"
+}
+
+Example Response
+
+On a successful request, the response will be a JSON object containing a set of insights related to the specified region:
+
+{
+    "message": "Insights generados",
+    "insights": {
+        "insights": [
+            {"punto": "Aumento del 10% en beneficiarios en los últimos 3 meses en la región."},
+            {"punto": "Donaciones de cereales estables, pero frutas y verduras han disminuido."},
+            {"punto": "Inventario de productos lácteos en niveles críticos."},
+            {"punto": "Satisfacción con los paquetes de alimentos ha mejorado en un 15%."}
+        ]
+    }
+}
+
+Type of Information You Can Obtain
+
+The insights generated by the Gemini API provide a short, bullet-point summary of the most relevant information based on the data from the region. Here are the key types of insights:
+
+	1.	Beneficiary Trends: How the number of beneficiaries has changed over the past year, showing any increases or decreases in certain periods.
+	2.	Donation Patterns: Insights into what types of donations are more common and whether any particular type of food donation is increasing or decreasing.
+	3.	Inventory Levels: Critical information about the stock levels of different food categories, allowing the organization to assess what is in abundance or what is running low.
+	4.	Satisfaction Rankings: A measure of how satisfied beneficiaries are with the food packages they receive, helping to optimize and adjust the content of food packages to improve satisfaction.
+
+These insights will help guide decisions about resource allocation, food donation campaigns, and beneficiary support strategies for the specified region.
+
+Error Handling
+
+If the request is not properly formed or there is a failure in generating insights, the API will respond with an error message in JSON format like this:
+
+{
+    "message": "Error al generar insights",
+    "error": "Descripción del error"
+}
+
+Conclusion
+
+By calling the /generate_insights endpoint, you can easily obtain concise, actionable insights based on historical data and current trends, helping the organization to make informed decisions and improve the effectiveness of its operations in different regions.
+
+This explanation provides a clear overview of how to use the endpoint, what kind of data you can expect, and the value the endpoint provides.
+
+Here’s the explanation in markdown format:
+
+## Generate Insights Endpoint
+
+### Overview
+The `/generate_insights` endpoint provides short,  insights based on beneficiary trends, donation patterns, inventory levels, and food package satisfaction rankings for a specific region. These insights help guide decisions on resource allocation, beneficiary support and general bussines knowledge. 
+
+### How to Use
+**Endpoint URL**: `http://127.0.0.1:5000/generate_insights`
+
+**Method**: POST
+
+**Request Body**:
+```json
+{
+    "region": "Guadalajara"
+}
+
+Example Response
+
+{
+    "message": "Insights generados",
+    "insights": {
+        "insights": [
+            {"punto": "Aumento del 10% en beneficiarios en los últimos 3 meses."},
+            {"punto": "Donaciones de frutas y verduras han disminuido."},
+            {"punto": "Inventario de lácteos en niveles críticos."},
+            {"punto": "Mejora del 15% en satisfacción con los paquetes de alimentos."}
+        ]
+    }
+}
+```
+
+Insights Provided
+
+	•	Beneficiary trends over the past year.
+	•	Donation patterns by food type.
+	•	Current inventory levels and critical shortages.
+	•	Satisfaction rankings for food packages.
+
+This endpoint allows for quick, data-driven insights to improve decision-making for resource management.
+
+
+
+Get All Regions Endpoint
+
+This endpoint retrieves all distinct regions from the beneficiaries table. It is useful for obtaining a clean list of regions where beneficiaries are registered.
+
+Endpoint:
+
+	•	URL: /get_regions
+	•	Method: GET
+
+Example Usage in Postman:
+
+	•	Select GET method.
+	•	Enter the URL: http://<your-server>/get_regions
+	•	Send the request.
+
+Example Response:
+
+{
+    "message": "Regions retrieved",
+    "regions": ["Guadalajara", "Monterrey", "Mexico City"]
+}
+
+This provides a clean list of regions available in the system.

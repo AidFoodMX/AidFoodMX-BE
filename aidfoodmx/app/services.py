@@ -1,8 +1,105 @@
 from datetime import datetime, timedelta
 from collections import defaultdict
 import math
+import requests
 from supabase_client import supabase
 from .models import Beneficiary, FoodPackage, Inventory
+from config import GEMINI_API_KEY  # Make sure your GEMINI_API_KEY is in the .env file
+import json
+
+
+# Initialize the Gemini API Client for generating insights
+class GeminiAPIClient:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent'
+        self.headers = {'Content-Type': 'application/json'}
+
+    def generate_content_stream(self, prompt_text):
+        url = f"{self.api_url}?key={self.api_key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt_text}]}]
+        }
+        try:
+            with requests.post(url, headers=self.headers, data=json.dumps(payload), stream=True) as response:
+                if response.status_code == 200:
+                    content = ""
+                    for chunk in response.iter_content(chunk_size=None):
+                        if chunk:
+                            content += chunk.decode('utf-8')
+                    return content
+                else:
+                    return {"error": response.status_code, "message": response.text}
+        except Exception as e:
+            return {"error": str(e)}
+
+# Initialize the Gemini client
+gemini_client = GeminiAPIClient(api_key=GEMINI_API_KEY)
+
+def generate_single_insight(prompt_text):
+    """Helper function to generate a single insight using the Gemini API."""
+    try:
+        insights_raw = gemini_client.generate_content_stream(prompt_text)
+        response_json = json.loads(insights_raw)
+        # Extract the content from the first candidate
+        insights_text = response_json["candidates"][0]["content"]["parts"][0]["text"]
+        return insights_text
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"Error processing Gemini response: {str(e)}")
+        return "No se pudo generar el insight."
+
+def generate_insights(region):
+    # Get beneficiary trends for the region
+    trends = get_beneficiary_trends_by_region(region, datetime.now() - timedelta(days=365), datetime.now())
+
+    # Get donation patterns per month
+    donation_patterns = get_kind_of_donations_per_month()
+
+    # Get current inventory data
+    inventory_data = get_total_inventory()
+
+    # Get food package satisfaction rankings per month
+    satisfaction_rankings = get_food_package_rankings_per_month()
+
+    # Build separate prompts for each insight
+    prompt_beneficiary_trend = f"Genera un breve resumen sobre las tendencias de beneficiarios en la región {region} con base en los siguientes datos: {trends['trends']}. Proporciónalo en un solo punto clave."
+    
+    prompt_donation_patterns = f"Genera un breve resumen sobre los patrones de donaciones por mes en la región {region} con base en los siguientes datos: {donation_patterns['donations_per_month']}. Proporciónalo en un solo punto clave."
+    
+    prompt_inventory = f"Genera un breve resumen sobre el estado del inventario en la región {region} con base en los siguientes datos: {inventory_data}. Proporciónalo en un solo punto clave."
+    
+    prompt_satisfaction = f"Genera un breve resumen sobre la satisfacción de los paquetes de alimentos en la región {region} con base en los siguientes datos: {satisfaction_rankings}. Proporciónalo en un solo punto clave."
+
+    # Get insights for each category
+    insight_beneficiary_trend = generate_single_insight(prompt_beneficiary_trend)
+    insight_donation_patterns = generate_single_insight(prompt_donation_patterns)
+    insight_inventory = generate_single_insight(prompt_inventory)
+    insight_satisfaction = generate_single_insight(prompt_satisfaction)
+
+    # Return insights in a clean JSON format
+    insights_json = {
+        "insights": [
+            {"punto": insight_beneficiary_trend},
+            {"punto": insight_donation_patterns},
+            {"punto": insight_inventory},
+            {"punto": insight_satisfaction}
+        ]
+    }
+
+    return insights_json
+# Service to register a beneficiary with region
+def register_beneficiary_with_region(data):
+    new_beneficiary = {
+        "name": data.get('name'),
+        "satisfaction": data.get('satisfaction', 0),
+        "date_registered": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat(),
+        "region": data.get('region')
+    }
+    try:
+        result = supabase.table('beneficiaries').insert(new_beneficiary).execute()
+        return {"message": "Beneficiary registered", "beneficiary": result.data}
+    except Exception as e:
+        return {"message": "Failed to register beneficiary", "error": str(e)}
 
 # Servicio para registrar un beneficiario con fecha
 def register_beneficiary_with_region(data):
@@ -447,6 +544,47 @@ def get_donations_per_month_of_year():
     except Exception as e:
         return {"message": "Failed to get donations per month of year", "error": str(e)}
 # Servicio para obtener las donaciones por semana
+
+def get_kind_of_donations_per_month():
+    try:
+        # Get the current year
+        current_year = datetime.now().year
+        
+        # Dictionary to store donation types per month
+        donations_per_month = defaultdict(lambda: {
+            "non_perishables": 0,
+            "cereals": 0,
+            "fruits_vegetables": 0,
+            "dairy": 0,
+            "meat": 0
+        })
+        
+        # Iterate over the 12 months of the year
+        for month in range(1, 13):
+            # Get the first day of the current month
+            start_of_month = datetime(current_year, month, 1)
+            
+            # Get the first day of the next month
+            if month == 12:
+                next_month = datetime(current_year + 1, 1, 1)
+            else:
+                next_month = datetime(current_year, month + 1, 1)
+
+            # Fetch donations between the first day of the current month and the next month
+            result = supabase.table('donations').select('*').gte('donation_date', start_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
+            
+            # Process each donation and accumulate the totals for each type
+            for donation in result.data:
+                donations_per_month[start_of_month.strftime('%Y-%m')]["non_perishables"] += donation.get('non_perishables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["cereals"] += donation.get('cereals', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["fruits_vegetables"] += donation.get('fruits_vegetables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["dairy"] += donation.get('dairy', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["meat"] += donation.get('meat', 0)
+        
+        return {"donations_per_month": donations_per_month}
+    except Exception as e:
+        return {"message": "Failed to get kind of donations per month", "error": str(e)}
+    
 def get_donations_per_week():
     try:
         # Obtener el inicio de la semana actual (lunes)
@@ -485,3 +623,16 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
+
+# Service to get all distinct regions from the beneficiaries table
+def get_all_regions():
+    try:
+        # Query to get all regions from the beneficiaries table
+        result = supabase.table('beneficiaries').select('region').execute()
+
+        # Extract regions from the result and remove duplicates
+        regions = list(set(beneficiary['region'] for beneficiary in result.data if 'region' in beneficiary))
+
+        return {"message": "Regions retrieved", "regions": regions}
+    except Exception as e:
+        return {"message": "Failed to retrieve regions", "error": str(e)}
