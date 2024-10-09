@@ -187,24 +187,22 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 - **Response Example (JSON):**
 
   ```json
-  {
-    "donations_per_month": {
-      "2024-09": {
-        "non_perishables": 100,
-        "cereals": 50,
-        "fruits_vegetables": 70,
-        "dairy": 30,
-        "meat": 25
-      },
-      "2024-10": {
-        "non_perishables": 80,
-        "cereals": 40,
-        "fruits_vegetables": 60,
-        "dairy": 25,
-        "meat": 20
-      }
-    }
-  }
+    {
+       "donations_per_month": {
+           "2024-01": 5,
+           "2024-02": 5,
+           "2024-03": 5,
+           "2024-04": 1,
+           "2024-05": 1,
+           "2024-06": 1,
+           "2024-07": 1,
+           "2024-08": 1,
+           "2024-09": 1,
+           "2024-10": 5,
+           "2024-11": 0,
+           "2024-12": 0
+       }
+   }
   ```
 
   **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
