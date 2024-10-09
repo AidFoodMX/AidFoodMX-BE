@@ -447,6 +447,47 @@ def get_donations_per_month_of_year():
     except Exception as e:
         return {"message": "Failed to get donations per month of year", "error": str(e)}
 # Servicio para obtener las donaciones por semana
+
+def get_kind_of_donations_per_month():
+    try:
+        # Get the current year
+        current_year = datetime.now().year
+        
+        # Dictionary to store donation types per month
+        donations_per_month = defaultdict(lambda: {
+            "non_perishables": 0,
+            "cereals": 0,
+            "fruits_vegetables": 0,
+            "dairy": 0,
+            "meat": 0
+        })
+        
+        # Iterate over the 12 months of the year
+        for month in range(1, 13):
+            # Get the first day of the current month
+            start_of_month = datetime(current_year, month, 1)
+            
+            # Get the first day of the next month
+            if month == 12:
+                next_month = datetime(current_year + 1, 1, 1)
+            else:
+                next_month = datetime(current_year, month + 1, 1)
+
+            # Fetch donations between the first day of the current month and the next month
+            result = supabase.table('donations').select('*').gte('donation_date', start_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
+            
+            # Process each donation and accumulate the totals for each type
+            for donation in result.data:
+                donations_per_month[start_of_month.strftime('%Y-%m')]["non_perishables"] += donation.get('non_perishables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["cereals"] += donation.get('cereals', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["fruits_vegetables"] += donation.get('fruits_vegetables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["dairy"] += donation.get('dairy', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["meat"] += donation.get('meat', 0)
+        
+        return {"donations_per_month": donations_per_month}
+    except Exception as e:
+        return {"message": "Failed to get kind of donations per month", "error": str(e)}
+    
 def get_donations_per_week():
     try:
         # Obtener el inicio de la semana actual (lunes)
