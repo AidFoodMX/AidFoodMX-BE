@@ -5,7 +5,7 @@ from .services import (
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
     get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries, register_multiple_food_package_rankings,
-    get_kind_of_donations_per_month, generate_insights
+    get_kind_of_donations_per_month, generate_insights, get_all_regions
 )
 
 def register_routes(app):
@@ -174,3 +174,12 @@ def register_routes(app):
                 "message": "Failed to generate insights",
                 "error": str(e)
             }), 500
+            
+    @app.route('/get_regions', methods=['GET'])
+    def get_regions():
+        try:
+            # Call the service to fetch all regions
+            response = get_all_regions()
+            return jsonify(response), 200
+        except Exception as e:
+            return jsonify({"error": str(e), "message": "Failed to get regions"}), 500

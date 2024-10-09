@@ -619,4 +619,16 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
-   
+
+# Service to get all distinct regions from the beneficiaries table
+def get_all_regions():
+    try:
+        # Query to get all regions from the beneficiaries table
+        result = supabase.table('beneficiaries').select('region').execute()
+
+        # Extract regions from the result and remove duplicates
+        regions = list(set(beneficiary['region'] for beneficiary in result.data if 'region' in beneficiary))
+
+        return {"message": "Regions retrieved", "regions": regions}
+    except Exception as e:
+        return {"message": "Failed to retrieve regions", "error": str(e)}
