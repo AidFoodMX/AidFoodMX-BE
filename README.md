@@ -28,24 +28,30 @@ If Python is not installed, download and install it from the official [Python we
    First, clone this repository to your local machine:
 
    ```bash
-   git clone <repository_url>
-   ```
+git clone https://github.com/AidFoodMX/AidFoodMX-BE
+   ```   ````
 
 2. **Navigate to the Project Directory:**
 
    Move into the project's root directory:
 
-   ```bash
-   cd <project_directory>
+
+   ````
+```bash
+cd AidFoodMX-BE
    ```
+
+```bash
+cd aidFoodmx   
+   ```
+
 
 3. **Create and Activate a Virtual Environment (Optional but recommended):**
 
-   It’s recommended to use a virtual environment to isolate your project dependencies.
 
    - **Create a virtual environment**:
      ```bash
-     python -m venv venv
+python3 -m venv venv
      ```
 
    - **Activate the virtual environment**:
@@ -55,7 +61,7 @@ If Python is not installed, download and install it from the official [Python we
        ```
      - On macOS and Linux:
        ```bash
-       source venv/bin/activate
+source venv/bin/activate
        ```
 
 4. **Install Dependencies:**
@@ -66,11 +72,9 @@ If Python is not installed, download and install it from the official [Python we
    pip install -r requirements.txt
    ```
 
-   Additionally, if you need `beautifulsoup4` and it’s not listed in the `requirements.txt`, you can install it using:
+   Additionally, do not forget add the .env
 
-   ```bash
-   pip install beautifulsoup4
-   ```
+
 
 ### Running the Project
 
@@ -183,24 +187,22 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 - **Response Example (JSON):**
 
   ```json
-  {
-    "donations_per_month": {
-      "2024-09": {
-        "non_perishables": 100,
-        "cereals": 50,
-        "fruits_vegetables": 70,
-        "dairy": 30,
-        "meat": 25
-      },
-      "2024-10": {
-        "non_perishables": 80,
-        "cereals": 40,
-        "fruits_vegetables": 60,
-        "dairy": 25,
-        "meat": 20
-      }
-    }
-  }
+    {
+       "donations_per_month": {
+           "2024-01": 5,
+           "2024-02": 5,
+           "2024-03": 5,
+           "2024-04": 1,
+           "2024-05": 1,
+           "2024-06": 1,
+           "2024-07": 1,
+           "2024-08": 1,
+           "2024-09": 1,
+           "2024-10": 5,
+           "2024-11": 0,
+           "2024-12": 0
+       }
+   }
   ```
 
   **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
@@ -454,7 +456,6 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   ```
 
 ---
-Here’s an explanation of what each of these endpoints does and why they are useful:
 
 ### **Predecir futuros beneficiarios** (`predict_future_beneficiaries`)
 
