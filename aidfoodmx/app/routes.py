@@ -5,7 +5,7 @@ from .services import (
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
     get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries, register_multiple_food_package_rankings,
-    get_kind_of_donations_per_month
+    get_kind_of_donations_per_month, generate_insights
 )
 
 def register_routes(app):
@@ -154,3 +154,17 @@ def register_routes(app):
         beneficiaries = request.json  # Expecting a list of beneficiaries in JSON format
         result = register_multiple_beneficiaries(beneficiaries)
         return jsonify(result), 201
+    
+    @app.route('/generate_insights', methods=['POST'])
+    def generate_insights_route():
+        try:
+            # Get region and period from the request body
+            region = request.json.get('region', 'all')
+            period = request.json.get('period', 6)
+            
+            # Call the service to generate insights
+            insights = generate_insights(region, period)
+            
+            return jsonify({"message": "Insights generated", "insights": insights}), 200
+        except Exception as e:
+            return jsonify({"message": "Failed to generate insights", "error": str(e)}), 500

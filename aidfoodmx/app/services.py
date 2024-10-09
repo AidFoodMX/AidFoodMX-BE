@@ -1,8 +1,63 @@
 from datetime import datetime, timedelta
 from collections import defaultdict
 import math
+import requests
 from supabase_client import supabase
 from .models import Beneficiary, FoodPackage, Inventory
+from config import GEMINI_API_KEY  # Make sure your GEMINI_API_KEY is in the .env file
+import json
+
+
+# Initialize the Gemini API Client for generating insights
+class GeminiAPIClient:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent'
+        self.headers = {'Content-Type': 'application/json'}
+
+    def generate_content_stream(self, prompt_text):
+        url = f"{self.api_url}?key={self.api_key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt_text}]}]
+        }
+        try:
+            with requests.post(url, headers=self.headers, data=json.dumps(payload), stream=True) as response:
+                if response.status_code == 200:
+                    content = ""
+                    for chunk in response.iter_content(chunk_size=None):
+                        if chunk:
+                            content += chunk.decode('utf-8')
+                    return content
+                else:
+                    return {"error": response.status_code, "message": response.text}
+        except Exception as e:
+            return {"error": str(e)}
+
+# Initialize the Gemini client
+gemini_client = GeminiAPIClient(api_key=GEMINI_API_KEY)
+
+# Function to generate insights
+def generate_insights(region, period):
+    prompt_text = f"""
+        Generate insights for the region {region} for the next {period} months based on donation patterns,
+        inventory usage, and beneficiary satisfaction levels. What trends and future predictions can be drawn?
+    """
+    insights = gemini_client.generate_content_stream(prompt_text)
+    return insights
+
+# Service to register a beneficiary with region
+def register_beneficiary_with_region(data):
+    new_beneficiary = {
+        "name": data.get('name'),
+        "satisfaction": data.get('satisfaction', 0),
+        "date_registered": datetime.strptime(data.get('date'), '%Y-%m-%d').isoformat(),
+        "region": data.get('region')
+    }
+    try:
+        result = supabase.table('beneficiaries').insert(new_beneficiary).execute()
+        return {"message": "Beneficiary registered", "beneficiary": result.data}
+    except Exception as e:
+        return {"message": "Failed to register beneficiary", "error": str(e)}
 
 # Servicio para registrar un beneficiario con fecha
 def register_beneficiary_with_region(data):
@@ -526,3 +581,4 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
+   
