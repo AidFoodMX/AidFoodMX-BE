@@ -36,6 +36,18 @@ class GeminiAPIClient:
 # Initialize the Gemini client
 gemini_client = GeminiAPIClient(api_key=GEMINI_API_KEY)
 
+def generate_single_insight(prompt_text):
+    """Helper function to generate a single insight using the Gemini API."""
+    try:
+        insights_raw = gemini_client.generate_content_stream(prompt_text)
+        response_json = json.loads(insights_raw)
+        # Extract the content from the first candidate
+        insights_text = response_json["candidates"][0]["content"]["parts"][0]["text"]
+        return insights_text
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"Error processing Gemini response: {str(e)}")
+        return "No se pudo generar el insight."
+
 def generate_insights(region):
     # Get beneficiary trends for the region
     trends = get_beneficiary_trends_by_region(region, datetime.now() - timedelta(days=365), datetime.now())
@@ -49,36 +61,28 @@ def generate_insights(region):
     # Get food package satisfaction rankings per month
     satisfaction_rankings = get_food_package_rankings_per_month()
 
-    # Build a detailed prompt with gathered data in Spanish
-    prompt_text = f"""
-    Genera un resumen de los insights para la región {region} basado en los siguientes datos:
-    - Tendencias de beneficiarios en el último año: {trends['trends']}
-    - Patrones de donaciones por mes: {donation_patterns['donations_per_month']}
-    - Datos actuales del inventario: {inventory_data}
-    - Clasificación de satisfacción de los paquetes de alimentos: {satisfaction_rankings}
+    # Build separate prompts for each insight
+    prompt_beneficiary_trend = f"Genera un breve resumen sobre las tendencias de beneficiarios en la región {region} con base en los siguientes datos: {trends['trends']}. Proporciónalo en un solo punto clave."
+    
+    prompt_donation_patterns = f"Genera un breve resumen sobre los patrones de donaciones por mes en la región {region} con base en los siguientes datos: {donation_patterns['donations_per_month']}. Proporciónalo en un solo punto clave."
+    
+    prompt_inventory = f"Genera un breve resumen sobre el estado del inventario en la región {region} con base en los siguientes datos: {inventory_data}. Proporciónalo en un solo punto clave."
+    
+    prompt_satisfaction = f"Genera un breve resumen sobre la satisfacción de los paquetes de alimentos en la región {region} con base en los siguientes datos: {satisfaction_rankings}. Proporciónalo en un solo punto clave."
 
-    Proporciona un resumen breve en formato de puntos clave, incluyendo tendencias y predicciones futuras para la región.
-    """
+    # Get insights for each category
+    insight_beneficiary_trend = generate_single_insight(prompt_beneficiary_trend)
+    insight_donation_patterns = generate_single_insight(prompt_donation_patterns)
+    insight_inventory = generate_single_insight(prompt_inventory)
+    insight_satisfaction = generate_single_insight(prompt_satisfaction)
 
-    # Call the Gemini API to generate insights
-    insights_raw = gemini_client.generate_content_stream(prompt_text)
-
-    # Process the insights to ensure they are short and in JSON format for easy FE handling
-    # Example of expected structure:
-    # {
-    #     "insights": [
-    #         {"punto": "El número de beneficiarios ha aumentado un 20% en los últimos 6 meses."},
-    #         {"punto": "Las donaciones de alimentos no perecederos han disminuido en el último trimestre."},
-    #         {"punto": "El inventario de productos lácteos está en su nivel más bajo desde hace 3 meses."}
-    #     ]
-    # }
-
+    # Return insights in a clean JSON format
     insights_json = {
         "insights": [
-            {"punto": "Aumento del 10% en beneficiarios en los últimos 3 meses en la región."},
-            {"punto": "Donaciones de cereales estables, pero frutas y verduras han disminuido."},
-            {"punto": "Inventario de productos lácteos en niveles críticos."},
-            {"punto": "Satisfacción con los paquetes de alimentos ha mejorado en un 15%."}
+            {"punto": insight_beneficiary_trend},
+            {"punto": insight_donation_patterns},
+            {"punto": insight_inventory},
+            {"punto": insight_satisfaction}
         ]
     }
 
