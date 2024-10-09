@@ -667,3 +667,28 @@ Insights Provided
 
 This endpoint allows for quick, data-driven insights to improve decision-making for resource management.
 
+
+
+Get All Regions Endpoint
+
+This endpoint retrieves all distinct regions from the beneficiaries table. It is useful for obtaining a clean list of regions where beneficiaries are registered.
+
+Endpoint:
+
+	•	URL: /get_regions
+	•	Method: GET
+
+Example Usage in Postman:
+
+	•	Select GET method.
+	•	Enter the URL: http://<your-server>/get_regions
+	•	Send the request.
+
+Example Response:
+
+{
+    "message": "Regions retrieved",
+    "regions": ["Guadalajara", "Monterrey", "Mexico City"]
+}
+
+This provides a clean list of regions available in the system.
