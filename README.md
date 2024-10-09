@@ -29,17 +29,19 @@ If Python is not installed, download and install it from the official [Python we
 
    ```bash
 git clone https://github.com/AidFoodMX/AidFoodMX-BE
-   ```
+   ```   ````
 
 2. **Navigate to the Project Directory:**
 
    Move into the project's root directory:
 
-   ```bash
+
+   ````
+```bash
 cd AidFoodMX-BE
    ```
 
-      ```bash
+```bash
 cd aidFoodmx   
    ```
 
@@ -456,7 +458,6 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
   ```
 
 ---
-Here’s an explanation of what each of these endpoints does and why they are useful:
 
 ### **Predecir futuros beneficiarios** (`predict_future_beneficiaries`)
 
