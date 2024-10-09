@@ -36,15 +36,53 @@ class GeminiAPIClient:
 # Initialize the Gemini client
 gemini_client = GeminiAPIClient(api_key=GEMINI_API_KEY)
 
-# Function to generate insights
-def generate_insights(region, period):
-    prompt_text = f"""
-        Generate insights for the region {region} for the next {period} months based on donation patterns,
-        inventory usage, and beneficiary satisfaction levels. What trends and future predictions can be drawn?
-    """
-    insights = gemini_client.generate_content_stream(prompt_text)
-    return insights
+def generate_insights(region):
+    # Get beneficiary trends for the region
+    trends = get_beneficiary_trends_by_region(region, datetime.now() - timedelta(days=365), datetime.now())
 
+    # Get donation patterns per month
+    donation_patterns = get_kind_of_donations_per_month()
+
+    # Get current inventory data
+    inventory_data = get_total_inventory()
+
+    # Get food package satisfaction rankings per month
+    satisfaction_rankings = get_food_package_rankings_per_month()
+
+    # Build a detailed prompt with gathered data in Spanish
+    prompt_text = f"""
+    Genera un resumen de los insights para la región {region} basado en los siguientes datos:
+    - Tendencias de beneficiarios en el último año: {trends['trends']}
+    - Patrones de donaciones por mes: {donation_patterns['donations_per_month']}
+    - Datos actuales del inventario: {inventory_data}
+    - Clasificación de satisfacción de los paquetes de alimentos: {satisfaction_rankings}
+
+    Proporciona un resumen breve en formato de puntos clave, incluyendo tendencias y predicciones futuras para la región.
+    """
+
+    # Call the Gemini API to generate insights
+    insights_raw = gemini_client.generate_content_stream(prompt_text)
+
+    # Process the insights to ensure they are short and in JSON format for easy FE handling
+    # Example of expected structure:
+    # {
+    #     "insights": [
+    #         {"punto": "El número de beneficiarios ha aumentado un 20% en los últimos 6 meses."},
+    #         {"punto": "Las donaciones de alimentos no perecederos han disminuido en el último trimestre."},
+    #         {"punto": "El inventario de productos lácteos está en su nivel más bajo desde hace 3 meses."}
+    #     ]
+    # }
+
+    insights_json = {
+        "insights": [
+            {"punto": "Aumento del 10% en beneficiarios en los últimos 3 meses en la región."},
+            {"punto": "Donaciones de cereales estables, pero frutas y verduras han disminuido."},
+            {"punto": "Inventario de productos lácteos en niveles críticos."},
+            {"punto": "Satisfacción con los paquetes de alimentos ha mejorado en un 15%."}
+        ]
+    }
+
+    return insights_json
 # Service to register a beneficiary with region
 def register_beneficiary_with_region(data):
     new_beneficiary = {

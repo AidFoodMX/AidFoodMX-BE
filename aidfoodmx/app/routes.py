@@ -156,15 +156,21 @@ def register_routes(app):
         return jsonify(result), 201
     
     @app.route('/generate_insights', methods=['POST'])
-    def generate_insights_route():
+    def insights_endpoint():
         try:
-            # Get region and period from the request body
-            region = request.json.get('region', 'all')
-            period = request.json.get('period', 6)
-            
+            # Extract region from the request JSON body
+            data = request.get_json()
+            region = data.get('region')
+
             # Call the service to generate insights
-            insights = generate_insights(region, period)
-            
-            return jsonify({"message": "Insights generated", "insights": insights}), 200
+            insights = generate_insights(region)
+
+            return jsonify({
+                "message": "Insights generated",
+                "insights": insights
+            })
         except Exception as e:
-            return jsonify({"message": "Failed to generate insights", "error": str(e)}), 500
+            return jsonify({
+                "message": "Failed to generate insights",
+                "error": str(e)
+            }), 500
