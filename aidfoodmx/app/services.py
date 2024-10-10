@@ -495,6 +495,7 @@ def get_total_inventory():
         return {"message": "Failed to get total inventory", "error": str(e)}
 
 # Servicio para registrar donaciones por semana y mes
+# Servicio para registrar donaciones por semana y mes
 def record_donations(data):
     new_donation = {
         "donation_date": datetime.now().isoformat(),  # Inserta la fecha actual
@@ -502,7 +503,9 @@ def record_donations(data):
         "cereals": data.get('cereals', 0),
         "fruits_vegetables": data.get('fruits_vegetables', 0),
         "dairy": data.get('dairy', 0),
-        "meat": data.get('meat', 0)
+        "meat": data.get('meat', 0),
+        "donator": data.get('donator'),  # New column for donator
+        "region": data.get('region')  # New column for region
     }
 
     try:
@@ -511,7 +514,7 @@ def record_donations(data):
         return {"message": "Donation recorded", "donation": result.data}
     except Exception as e:
         return {"message": "Failed to record donation", "error": str(e)}
-    
+      
 # Servicio para obtener las donaciones por mes
 # Servicio para obtener el número de donaciones por mes del año actual
 def get_donations_per_month_of_year():
@@ -524,14 +527,10 @@ def get_donations_per_month_of_year():
         
         # Iterar sobre los 12 meses del año
         for month in range(1, 13):
-            # Obtener el primer día del mes actual
             start_of_month = datetime(current_year, month, 1)
-            # Obtener el primer día del siguiente mes
             if month == 12:
-                # Si estamos en diciembre, el siguiente mes es enero del próximo año
                 next_month = datetime(current_year + 1, 1, 1)
             else:
-                # Si no estamos en diciembre, simplemente obtenemos el primer día del siguiente mes
                 next_month = datetime(current_year, month + 1, 1)
 
             # Hacer la consulta para obtener las donaciones entre el primer día y el siguiente mes
