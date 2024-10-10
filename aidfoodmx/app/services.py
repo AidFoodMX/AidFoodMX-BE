@@ -495,26 +495,23 @@ def get_total_inventory():
         return {"message": "Failed to get total inventory", "error": str(e)}
 
 # Servicio para registrar donaciones por semana y mes
-# Servicio para registrar donaciones por semana y mes
 def record_donations(data):
     new_donation = {
-        "donation_date": datetime.now().isoformat(),  # Inserta la fecha actual
+        "donation_date": datetime.now().isoformat(),
         "non_perishables": data.get('non_perishables', 0),
         "cereals": data.get('cereals', 0),
         "fruits_vegetables": data.get('fruits_vegetables', 0),
         "dairy": data.get('dairy', 0),
         "meat": data.get('meat', 0),
-        "donator": data.get('donator'),  # New column for donator
-        "region": data.get('region')  # New column for region
+        "donator": data.get('donator'),  # New field for donator
+        "region": data.get('region')  # New field for region
     }
 
     try:
-        # Inserta los datos en la tabla 'donations'
         result = supabase.table('donations').insert(new_donation).execute()
         return {"message": "Donation recorded", "donation": result.data}
     except Exception as e:
         return {"message": "Failed to record donation", "error": str(e)}
-      
 # Servicio para obtener las donaciones por mes
 # Servicio para obtener el número de donaciones por mes del año actual
 def get_donations_per_month_of_year():
@@ -542,9 +539,59 @@ def get_donations_per_month_of_year():
         return donations_per_month
     except Exception as e:
         return {"message": "Failed to get donations per month of year", "error": str(e)}
+    
+def get_top_donators_per_region(region):
+    try:
+        # Query donations by region and group by donator
+        result = supabase.table('donations').select('donator, COUNT(*) as total_donations').eq('region', region).group('donator').execute()
+
+        # Sort the result by total donations and return the top donators
+        top_donators = sorted(result.data, key=lambda x: x['total_donations'], reverse=True)
+
+        return {"message": "Top donators per region", "top_donators": top_donators}
+    except Exception as e:
+        return {"message": "Failed to get top donators per region", "error": str(e)}
+    
+    
 # Servicio para obtener las donaciones por semana
 
 def get_kind_of_donations_per_month():
+    try:
+        current_year = datetime.now().year
+        
+        donations_per_month = defaultdict(lambda: {
+            "non_perishables": 0,
+            "cereals": 0,
+            "fruits_vegetables": 0,
+            "dairy": 0,
+            "meat": 0,
+            "donators": set(),  # To hold unique donators
+            "regions": set()  # To hold regions
+        })
+        
+        for month in range(1, 13):
+            start_of_month = datetime(current_year, month, 1)
+            next_month = datetime(current_year + 1, 1, 1) if month == 12 else datetime(current_year, month + 1, 1)
+
+            result = supabase.table('donations').select('*').gte('donation_date', start_of_month.isoformat()).lt('donation_date', next_month.isoformat()).execute()
+
+            for donation in result.data:
+                donations_per_month[start_of_month.strftime('%Y-%m')]["non_perishables"] += donation.get('non_perishables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["cereals"] += donation.get('cereals', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["fruits_vegetables"] += donation.get('fruits_vegetables', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["dairy"] += donation.get('dairy', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["meat"] += donation.get('meat', 0)
+                donations_per_month[start_of_month.strftime('%Y-%m')]["donators"].add(donation.get('donator'))
+                donations_per_month[start_of_month.strftime('%Y-%m')]["regions"].add(donation.get('region'))
+        
+        # Convert sets to lists for JSON serialization
+        for month in donations_per_month:
+            donations_per_month[month]["donators"] = list(donations_per_month[month]["donators"])
+            donations_per_month[month]["regions"] = list(donations_per_month[month]["regions"])
+        
+        return {"donations_per_month": donations_per_month}
+    except Exception as e:
+        return {"message": "Failed to get kind of donations per month", "error": str(e)}
     try:
         # Get the current year
         current_year = datetime.now().year
@@ -586,6 +633,29 @@ def get_kind_of_donations_per_month():
     
 def get_donations_per_week():
     try:
+        now = datetime.now()
+        start_of_week = now - timedelta(days=now.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+
+        result = supabase.table('donations').select('*').gte('donation_date', start_of_week.isoformat()).lte('donation_date', end_of_week.isoformat()).execute()
+
+        donations = []
+        for donation in result.data:
+            donations.append({
+                "donation_date": donation.get('donation_date'),
+                "non_perishables": donation.get('non_perishables', 0),
+                "cereals": donation.get('cereals', 0),
+                "fruits_vegetables": donation.get('fruits_vegetables', 0),
+                "dairy": donation.get('dairy', 0),
+                "meat": donation.get('meat', 0),
+                "donator": donation.get('donator'),
+                "region": donation.get('region')
+            })
+
+        return {"donations_per_week": donations}
+    except Exception as e:
+        return {"message": "Failed to get donations per week", "error": str(e)}
+    try:
         # Obtener el inicio de la semana actual (lunes)
         now = datetime.now()
         start_of_week = now - timedelta(days=now.weekday())  # Lunes de esta semana
@@ -611,6 +681,28 @@ def record_multiple_donations(donations):
                 "cereals": donation.get('cereals', 0),
                 "fruits_vegetables": donation.get('fruits_vegetables', 0),
                 "dairy": donation.get('dairy', 0),
+                "meat": donation.get('meat', 0),
+                "donator": donation.get('donator'),  # New field for donator
+                "region": donation.get('region')  # New field for region
+            }
+            donations_to_insert.append(new_donation)
+
+        # Insertar todas las donaciones en un solo comando
+        result = supabase.table('donations').insert(donations_to_insert).execute()
+
+        return {"message": "Multiple donations recorded", "donations": result.data}
+    except Exception as e:
+        return {"message": "Failed to record multiple donations", "error": str(e)}
+    try:
+        # Crear una lista de donaciones a partir de los datos proporcionados
+        donations_to_insert = []
+        for donation in donations:
+            new_donation = {
+                "donation_date": donation.get('donation_date', datetime.now().isoformat()),  # Si no se proporciona, se usa la fecha actual
+                "non_perishables": donation.get('non_perishables', 0),
+                "cereals": donation.get('cereals', 0),
+                "fruits_vegetables": donation.get('fruits_vegetables', 0),
+                "dairy": donation.get('dairy', 0),
                 "meat": donation.get('meat', 0)
             }
             donations_to_insert.append(new_donation)
@@ -622,7 +714,21 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
+def get_top_donators_per_region(region):
+    try:
+        result = supabase.table('donations').select('donator, COUNT(*) as total').eq('region', region).group('donator').order('total', desc=True).execute()
 
+        return {"top_donators": result.data}
+    except Exception as e:
+        return {"message": "Failed to get top donators per region", "error": str(e)}
+    
+def get_top_donators_global():
+    try:
+        result = supabase.table('donations').select('donator, COUNT(*) as total').group('donator').order('total', desc=True).execute()
+
+        return {"top_donators_global": result.data}
+    except Exception as e:
+        return {"message": "Failed to get top donators globally", "error": str(e)}
 # Service to get all distinct regions from the beneficiaries table
 def get_all_regions():
     try:

@@ -183,3 +183,5 @@ def register_routes(app):
             return jsonify(response), 200
         except Exception as e:
             return jsonify({"error": str(e), "message": "Failed to get regions"}), 500
+        
+        
