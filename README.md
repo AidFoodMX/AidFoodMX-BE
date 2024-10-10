@@ -312,32 +312,208 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 - **Body Example (JSON):**
 
   ```json
-  [
-    {
-      "donation_date": "2024-01-10T14:30:00",
-      "non_perishables": 10,
-      "cereals": 5,
-      "fruits_vegetables": 8,
-      "dairy": 2,
-      "meat": 4
-    },
-    {
-      "donation_date": "2024-02-15T10:00:00",
-      "non_perishables": 15,
-      "cereals": 8,
-      "fruits_vegetables": 7,
-      "dairy": 3,
-      "meat": 6
-    },
-    {
-      "donation_date": "2024-03-01T12:45:00",
-      "non_perishables": 12,
-      "cereals": 10,
-      "fruits_vegetables": 15,
-      "dairy": 4,
-      "meat": 5
-    }
-  ]
+[
+  {
+    "donation_date": "2024-10-01T10:00:00",
+    "non_perishables": 150,
+    "cereals": 80,
+    "fruits_vegetables": 200,
+    "dairy": 100,
+    "meat": 50,
+    "donator": "Walmart",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-02T11:30:00",
+    "non_perishables": 120,
+    "cereals": 70,
+    "fruits_vegetables": 90,
+    "dairy": 50,
+    "meat": 30,
+    "donator": "Ley",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-03T12:00:00",
+    "non_perishables": 200,
+    "cereals": 90,
+    "fruits_vegetables": 180,
+    "dairy": 110,
+    "meat": 40,
+    "donator": "Bodega Aurrera",
+    "region": "Monterrey"
+  },
+  {
+    "donation_date": "2024-10-04T09:45:00",
+    "non_perishables": 130,
+    "cereals": 60,
+    "fruits_vegetables": 140,
+    "dairy": 80,
+    "meat": 60,
+    "donator": "Soriana",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-05T14:15:00",
+    "non_perishables": 90,
+    "cereals": 50,
+    "fruits_vegetables": 120,
+    "dairy": 70,
+    "meat": 40,
+    "donator": "Oxxo",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-06T08:30:00",
+    "non_perishables": 110,
+    "cereals": 60,
+    "fruits_vegetables": 150,
+    "dairy": 100,
+    "meat": 20,
+    "donator": "Walmart",
+    "region": "Cancún"
+  },
+  {
+    "donation_date": "2024-10-07T13:20:00",
+    "non_perishables": 170,
+    "cereals": 80,
+    "fruits_vegetables": 200,
+    "dairy": 130,
+    "meat": 60,
+    "donator": "Ley",
+    "region": "Monterrey"
+  },
+  {
+    "donation_date": "2024-10-08T10:05:00",
+    "non_perishables": 150,
+    "cereals": 70,
+    "fruits_vegetables": 140,
+    "dairy": 90,
+    "meat": 50,
+    "donator": "Bodega Aurrera",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-09T16:30:00",
+    "non_perishables": 100,
+    "cereals": 60,
+    "fruits_vegetables": 120,
+    "dairy": 50,
+    "meat": 30,
+    "donator": "Soriana",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-10T07:40:00",
+    "non_perishables": 130,
+    "cereals": 70,
+    "fruits_vegetables": 160,
+    "dairy": 60,
+    "meat": 40,
+    "donator": "Oxxo",
+    "region": "Monterrey"
+  },
+  {
+    "donation_date": "2024-10-11T12:45:00",
+    "non_perishables": 160,
+    "cereals": 90,
+    "fruits_vegetables": 180,
+    "dairy": 100,
+    "meat": 70,
+    "donator": "Walmart",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-12T09:20:00",
+    "non_perishables": 140,
+    "cereals": 80,
+    "fruits_vegetables": 130,
+    "dairy": 110,
+    "meat": 50,
+    "donator": "Ley",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-13T08:00:00",
+    "non_perishables": 180,
+    "cereals": 100,
+    "fruits_vegetables": 200,
+    "dairy": 130,
+    "meat": 60,
+    "donator": "Bodega Aurrera",
+    "region": "Monterrey"
+  },
+  {
+    "donation_date": "2024-10-14T14:50:00",
+    "non_perishables": 110,
+    "cereals": 60,
+    "fruits_vegetables": 150,
+    "dairy": 90,
+    "meat": 40,
+    "donator": "Soriana",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-15T13:00:00",
+    "non_perishables": 120,
+    "cereals": 70,
+    "fruits_vegetables": 140,
+    "dairy": 80,
+    "meat": 50,
+    "donator": "Oxxo",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-16T11:15:00",
+    "non_perishables": 160,
+    "cereals": 90,
+    "fruits_vegetables": 170,
+    "dairy": 100,
+    "meat": 60,
+    "donator": "Walmart",
+    "region": "Cancún"
+  },
+  {
+    "donation_date": "2024-10-17T10:30:00",
+    "non_perishables": 130,
+    "cereals": 80,
+    "fruits_vegetables": 130,
+    "dairy": 90,
+    "meat": 50,
+    "donator": "Ley",
+    "region": "Monterrey"
+  },
+  {
+    "donation_date": "2024-10-18T12:10:00",
+    "non_perishables": 140,
+    "cereals": 70,
+    "fruits_vegetables": 150,
+    "dairy": 110,
+    "meat": 40,
+    "donator": "Bodega Aurrera",
+    "region": "Guadalajara"
+  },
+  {
+    "donation_date": "2024-10-19T14:00:00",
+    "non_perishables": 150,
+    "cereals": 90,
+    "fruits_vegetables": 170,
+    "dairy": 120,
+    "meat": 60,
+    "donator": "Soriana",
+    "region": "Tijuana"
+  },
+  {
+    "donation_date": "2024-10-20T11:35:00",
+    "non_perishables": 120,
+    "cereals": 60,
+    "fruits_vegetables": 160,
+    "dairy": 100,
+    "meat": 40,
+    "donator": "Oxxo",
+    "region": "Monterrey"
+  }
+]
   ```
 
   **Descripción:** Registra múltiples donaciones con una sola solicitud.

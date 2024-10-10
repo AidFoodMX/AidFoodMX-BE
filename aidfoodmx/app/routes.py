@@ -5,7 +5,7 @@ from .services import (
     register_food_package_ranking, get_food_package_rankings_per_month, get_beneficiary_trends_by_region, 
     predict_future_beneficiaries, record_donations, get_total_inventory, 
     get_donations_per_month_of_year, get_donations_per_week, update_inventory, record_multiple_donations, register_multiple_beneficiaries, register_multiple_food_package_rankings,
-    get_kind_of_donations_per_month, generate_insights, get_all_regions
+    get_kind_of_donations_per_month, generate_insights, get_all_regions, get_top_donators_per_region, get_top_donators_global, get_donations_per_week,  get_donations_per_region
 )
 
 def register_routes(app):
@@ -184,4 +184,27 @@ def register_routes(app):
         except Exception as e:
             return jsonify({"error": str(e), "message": "Failed to get regions"}), 500
         
-        
+            
+    @app.route('/donations/record', methods=['POST'])
+    def record_donation_route():
+        return record_donations(request.json)
+
+    @app.route('/donations/kind-of-donations-per-month', methods=['GET'])
+    def kind_of_donations_per_month_route():
+        return get_kind_of_donations_per_month()
+
+    @app.route('/donations/per-week', methods=['GET'])
+    def donations_per_week_route():
+        return get_donations_per_week()
+
+    @app.route('/donations/top-donators/<region>', methods=['GET'])
+    def top_donators_per_region_route(region):
+        return get_top_donators_per_region(region)
+
+    @app.route('/donations/top-donators-global', methods=['GET'])
+    def top_donators_global_route():
+        return get_top_donators_global()
+
+    @app.route('/donations/per-region/<region>', methods=['GET'])
+    def donations_per_region_route(region):
+        return get_donations_per_region(region)

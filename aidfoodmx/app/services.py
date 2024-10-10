@@ -741,3 +741,11 @@ def get_all_regions():
         return {"message": "Regions retrieved", "regions": regions}
     except Exception as e:
         return {"message": "Failed to retrieve regions", "error": str(e)}
+    
+def get_donations_per_region(region):
+    try:
+        result = supabase.table('donations').select('*').eq('region', region).execute()
+
+        return {"donations_per_region": result.data}
+    except Exception as e:
+        return {"message": "Failed to get donations per region", "error": str(e)}
