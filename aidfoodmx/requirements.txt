@@ -3,3 +3,4 @@ beautifulsoup4==4.12.2
 supabase
 python-dotenv==1.0.0
 requests
+flask_cors
