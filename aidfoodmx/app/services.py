@@ -747,3 +747,75 @@ def get_donations_per_region(region):
         return {"donations_per_region": result.data}
     except Exception as e:
         return {"message": "Failed to get donations per region", "error": str(e)}
+    
+def get_inventory_by_region(region):
+    try:
+        result = supabase.table('inventory').select('*').eq('region', region).execute()
+
+        if result.data and len(result.data) > 0:
+            inventory_data = result.data[0]
+            return {
+                "non_perishables": inventory_data.get("non_perishables", 0),
+                "cereals": inventory_data.get("cereals", 0),
+                "fruits_vegetables": inventory_data.get("fruits_vegetables", 0),
+                "dairy": inventory_data.get("dairy", 0),
+                "meat": inventory_data.get("meat", 0),
+                "last_updated": inventory_data.get("last_updated", None),
+                "region": inventory_data.get("region")
+            }
+        else:
+            return {"error": f"No inventory data found for region '{region}'."}
+    except Exception as e:
+        return {"message": "Failed to get inventory by region", "error": str(e)}
+    
+    
+def update_inventory_by_region(data, region):
+    inventory_update = {
+        "non_perishables": data.get('non_perishables', 0),
+        "cereals": data.get('cereals', 0),
+        "fruits_vegetables": data.get('fruits_vegetables', 0),
+        "dairy": data.get('dairy', 0),
+        "meat": data.get('meat', 0),
+        "last_updated": datetime.now().isoformat()
+    }
+
+    try:
+        # Check if inventory exists for the given region
+        check_result = supabase.table('inventory').select('*').eq('region', region).execute()
+
+        if check_result.data:
+            # Update inventory if it exists
+            result = supabase.table('inventory').update(inventory_update).eq('region', region).execute()
+            return {"message": f"Inventory updated for region '{region}'", "inventory": result.data}
+        else:
+            # Create a new inventory entry for the region if not exists
+            inventory_update['region'] = region  # Add region to the new row
+            result = supabase.table('inventory').insert(inventory_update).execute()
+            return {"message": f"Inventory created for region '{region}'", "inventory": result.data}
+    except Exception as e:
+        return {"message": "Failed to update inventory for region", "error": str(e)}
+    
+def get_global_inventory():
+    try:
+        result = supabase.table('inventory').select('*').execute()
+
+        # Summarize inventory for all regions
+        total_inventory = defaultdict(int)
+        for row in result.data:
+            total_inventory["non_perishables"] += row.get("non_perishables", 0)
+            total_inventory["cereals"] += row.get("cereals", 0)
+            total_inventory["fruits_vegetables"] += row.get("fruits_vegetables", 0)
+            total_inventory["dairy"] += row.get("dairy", 0)
+            total_inventory["meat"] += row.get("meat", 0)
+
+        return {
+            "total_inventory": {
+                "non_perishables": total_inventory["non_perishables"],
+                "cereals": total_inventory["cereals"],
+                "fruits_vegetables": total_inventory["fruits_vegetables"],
+                "dairy": total_inventory["dairy"],
+                "meat": total_inventory["meat"]
+            }
+        }
+    except Exception as e:
+        return {"message": "Failed to get global inventory", "error": str(e)}
