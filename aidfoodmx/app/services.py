@@ -716,16 +716,14 @@ def record_multiple_donations(donations):
     
 def get_top_donators_per_region(region):
     try:
-        result = supabase.table('donations').select('donator, COUNT(*) as total').eq('region', region).group('donator').order('total', desc=True).execute()
-
+        result = supabase.rpc('get_top_donators_per_region', {"region_input": region}).execute()
         return {"top_donators": result.data}
     except Exception as e:
         return {"message": "Failed to get top donators per region", "error": str(e)}
-    
+
 def get_top_donators_global():
     try:
-        result = supabase.table('donations').select('donator, COUNT(*) as total').group('donator').order('total', desc=True).execute()
-
+        result = supabase.rpc('get_top_donators_global').execute()
         return {"top_donators_global": result.data}
     except Exception as e:
         return {"message": "Failed to get top donators globally", "error": str(e)}

@@ -209,66 +209,33 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 
 ---
 
+
+
 ### 5. **Get Donations Per Month**
 
 - **Método:** `GET`
-- **URL:** `http://127.0.0.1:5000/get_kind_of_donations_per_month`
+- URL: http://127.0.0.1:5000/donations/kind-of-donations-per-month
 - **Response Example (JSON):**
 
   ```json
-   {
-    "donations_per_month": {
-        "2024-04": {
-            "cereals": 7,
-            "dairy": 4,
-            "fruits_vegetables": 10,
-            "meat": 3,
-            "non_perishables": 15
-        },
-        "2024-05": {
-            "cereals": 3,
-            "dairy": 2,
-            "fruits_vegetables": 6,
-            "meat": 4,
-            "non_perishables": 7
-        },
-        "2024-06": {
-            "cereals": 5,
-            "dairy": 1,
-            "fruits_vegetables": 8,
-            "meat": 5,
-            "non_perishables": 9
-        },
-        "2024-07": {
-            "cereals": 6,
-            "dairy": 3,
-            "fruits_vegetables": 7,
-            "meat": 6,
-            "non_perishables": 11
-        },
-        "2024-08": {
-            "cereals": 8,
-            "dairy": 5,
-            "fruits_vegetables": 9,
-            "meat": 7,
-            "non_perishables": 14
-        },
-        "2024-09": {
-            "cereals": 3,
-            "dairy": 2,
-            "fruits_vegetables": 5,
-            "meat": 3,
-            "non_perishables": 6
-        },
-        "2024-10": {
-            "cereals": 24,
-            "dairy": 14,
-            "fruits_vegetables": 45,
-            "meat": 17,
-            "non_perishables": 48
-        }
+  {
+  "donations_per_month": {
+    "2024-01": {
+      "non_perishables": 30,
+      "cereals": 15,
+      "fruits_vegetables": 10,
+      "dairy": 5,
+      "meat": 2
+    },
+    "2024-02": {
+      "non_perishables": 20,
+      "cereals": 10,
+      "fruits_vegetables": 8,
+      "dairy": 4,
+      "meat": 1
     }
-} 
+  }
+}
   ```
 
   **Descripción:** Devuelve las donaciones totales recibidas para cada categoría por mes.
@@ -278,35 +245,314 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 ### 6. **Get Donations Per Week**
 
 - **Método:** `GET`
-- **URL:** `http://127.0.0.1:5000/get_donations_per_week`
+- URL: http://127.0.0.1:5000/donations/per-week
 - **Response Example (JSON):**
 
   ```json
+[
   {
-    "donations_per_week": {
-      "2024-38": {
-        "non_perishables": 50,
-        "cereals": 25,
-        "fruits_vegetables": 35,
-        "dairy": 15,
-        "meat": 10
-      },
-      "2024-39": {
-        "non_perishables": 30,
-        "cereals": 15,
-        "fruits_vegetables": 20,
-        "dairy": 10,
-        "meat": 5
-      }
-    }
+    "donation_date": "2024-10-10T15:30:00",
+    "non_perishables": 5,
+    "cereals": 3,
+    "fruits_vegetables": 4,
+    "dairy": 2,
+    "meat": 1,
+    "donator": "Donator A",
+    "region": "Region 1"
   }
+]
   ```
 
   **Descripción:** Devuelve las donaciones recibidas por semana (número de semana basado en el año).
 
 ---
 
+*  Get Top Donators Per Region
+
+	•	Método: GET
+	•	URL: http://127.0.0.1:5000/donations/top-donators/Guadalajara
+	•	Response Example (JSON):
+
+  example output: 
+  {
+    "donations_per_week": [
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 50,
+            "donation_date": "2024-10-09T16:30:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 120,
+            "meat": 30,
+            "non_perishables": 100,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 70,
+            "dairy": 60,
+            "donation_date": "2024-10-10T07:40:00",
+            "donator": "Oxxo",
+            "fruits_vegetables": 160,
+            "meat": 40,
+            "non_perishables": 130,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 110,
+            "donation_date": "2024-10-12T09:20:00",
+            "donator": "Ley",
+            "fruits_vegetables": 130,
+            "meat": 50,
+            "non_perishables": 140,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 100,
+            "dairy": 130,
+            "donation_date": "2024-10-13T08:00:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 200,
+            "meat": 60,
+            "non_perishables": 180,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 50,
+            "donation_date": "2024-10-09T16:30:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 120,
+            "meat": 30,
+            "non_perishables": 100,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 70,
+            "dairy": 60,
+            "donation_date": "2024-10-10T07:40:00",
+            "donator": "Oxxo",
+            "fruits_vegetables": 160,
+            "meat": 40,
+            "non_perishables": 130,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 110,
+            "donation_date": "2024-10-12T09:20:00",
+            "donator": "Ley",
+            "fruits_vegetables": 130,
+            "meat": 50,
+            "non_perishables": 140,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 100,
+            "dairy": 130,
+            "donation_date": "2024-10-13T08:00:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 200,
+            "meat": 60,
+            "non_perishables": 180,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 50,
+            "donation_date": "2024-10-09T16:30:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 120,
+            "meat": 30,
+            "non_perishables": 100,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 70,
+            "dairy": 60,
+            "donation_date": "2024-10-10T07:40:00",
+            "donator": "Oxxo",
+            "fruits_vegetables": 160,
+            "meat": 40,
+            "non_perishables": 130,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 110,
+            "donation_date": "2024-10-12T09:20:00",
+            "donator": "Ley",
+            "fruits_vegetables": 130,
+            "meat": 50,
+            "non_perishables": 140,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 100,
+            "dairy": 130,
+            "donation_date": "2024-10-13T08:00:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 200,
+            "meat": 60,
+            "non_perishables": 180,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 50,
+            "donation_date": "2024-10-09T16:30:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 120,
+            "meat": 30,
+            "non_perishables": 100,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 70,
+            "dairy": 60,
+            "donation_date": "2024-10-10T07:40:00",
+            "donator": "Oxxo",
+            "fruits_vegetables": 160,
+            "meat": 40,
+            "non_perishables": 130,
+            "region": "Monterrey"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 110,
+            "donation_date": "2024-10-12T09:20:00",
+            "donator": "Ley",
+            "fruits_vegetables": 130,
+            "meat": 50,
+            "non_perishables": 140,
+            "region": "Tijuana"
+        },
+        {
+            "cereals": 100,
+            "dairy": 130,
+            "donation_date": "2024-10-13T08:00:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 200,
+            "meat": 60,
+            "non_perishables": 180,
+            "region": "Monterrey"
+        }
+    ]
+}
+
+
+## **here we get the top global donators** 
+
+- **URL:**  http://127.0.0.1:5000/donations/top-donators-global
+
+example output: 
+
+{
+    "top_donators_global": [
+        {
+            "donator": "Soriana",
+            "total": 16
+        },
+        {
+            "donator": "Walmart",
+            "total": 16
+        },
+        {
+            "donator": "Bodega Aurrera",
+            "total": 16
+        },
+        {
+            "donator": "Ley",
+            "total": 16
+        },
+        {
+            "donator": "Oxxo",
+            "total": 16
+        }
+    ]
+}
+
 ### **Recordar múltiples donaciones**
+
 
 - **URL:** `http://127.0.0.1:5000/record_multiple_donations`
 - **Body Example (JSON):**
