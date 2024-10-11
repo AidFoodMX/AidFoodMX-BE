@@ -1387,3 +1387,18 @@ Example Response:
 }
 
 This provides a clean list of regions available in the system.
+
+
+## **update donations per regio** 
+
+url: http://127.0.0.1:5000/inventory/update-by-region/Guadalajara
+
+body example: 
+
+{
+    "non_perishables": 200,
+    "cereals": 100,
+    "fruits_vegetables": 150,
+    "dairy": 50,
+    "meat": 75
+}
