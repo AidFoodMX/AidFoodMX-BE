@@ -551,6 +551,279 @@ example output:
     ]
 }
 
+## **like this we can get the donations per region** 
+
+ - **URL:**  http://127.0.0.1:5000/donations/per-region/Guadalajara
+ - example out: 
+ - {
+    "donations_per_region": [
+        {
+            "cereals": 80,
+            "dairy": 100,
+            "donation_date": "2024-10-01T10:00:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 200,
+            "id": 27,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 80,
+            "donation_date": "2024-10-04T09:45:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 140,
+            "id": 30,
+            "meat": 60,
+            "non_perishables": 130,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "id": 34,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "id": 37,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 90,
+            "donation_date": "2024-10-14T14:50:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 150,
+            "id": 40,
+            "meat": 40,
+            "non_perishables": 110,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 110,
+            "donation_date": "2024-10-18T12:10:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 150,
+            "id": 44,
+            "meat": 40,
+            "non_perishables": 140,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 100,
+            "donation_date": "2024-10-01T10:00:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 200,
+            "id": 47,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 80,
+            "donation_date": "2024-10-04T09:45:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 140,
+            "id": 50,
+            "meat": 60,
+            "non_perishables": 130,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "id": 54,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "id": 57,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 90,
+            "donation_date": "2024-10-14T14:50:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 150,
+            "id": 60,
+            "meat": 40,
+            "non_perishables": 110,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 110,
+            "donation_date": "2024-10-18T12:10:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 150,
+            "id": 64,
+            "meat": 40,
+            "non_perishables": 140,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 100,
+            "donation_date": "2024-10-01T10:00:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 200,
+            "id": 67,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 80,
+            "donation_date": "2024-10-04T09:45:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 140,
+            "id": 70,
+            "meat": 60,
+            "non_perishables": 130,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "id": 74,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "id": 77,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 90,
+            "donation_date": "2024-10-14T14:50:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 150,
+            "id": 80,
+            "meat": 40,
+            "non_perishables": 110,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 110,
+            "donation_date": "2024-10-18T12:10:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 150,
+            "id": 84,
+            "meat": 40,
+            "non_perishables": 140,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 80,
+            "dairy": 100,
+            "donation_date": "2024-10-01T10:00:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 200,
+            "id": 87,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 80,
+            "donation_date": "2024-10-04T09:45:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 140,
+            "id": 90,
+            "meat": 60,
+            "non_perishables": 130,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 90,
+            "donation_date": "2024-10-08T10:05:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 140,
+            "id": 94,
+            "meat": 50,
+            "non_perishables": 150,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 90,
+            "dairy": 100,
+            "donation_date": "2024-10-11T12:45:00",
+            "donator": "Walmart",
+            "fruits_vegetables": 180,
+            "id": 97,
+            "meat": 70,
+            "non_perishables": 160,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 60,
+            "dairy": 90,
+            "donation_date": "2024-10-14T14:50:00",
+            "donator": "Soriana",
+            "fruits_vegetables": 150,
+            "id": 100,
+            "meat": 40,
+            "non_perishables": 110,
+            "region": "Guadalajara"
+        },
+        {
+            "cereals": 70,
+            "dairy": 110,
+            "donation_date": "2024-10-18T12:10:00",
+            "donator": "Bodega Aurrera",
+            "fruits_vegetables": 150,
+            "id": 104,
+            "meat": 40,
+            "non_perishables": 140,
+            "region": "Guadalajara"
+        }
+    ]
+}
+
 ### **Recordar múltiples donaciones**
 
 
