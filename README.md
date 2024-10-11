@@ -827,7 +827,7 @@ example output:
 ### **Recordar múltiples donaciones**
 
 
-- **URL:** `http://127.0.0.1:5000/record_multiple_donations`
+- **URL:** `http://127.0.0.1:5000/record_multiple_donations` 
 - **Body Example (JSON):**
 
   ```json
