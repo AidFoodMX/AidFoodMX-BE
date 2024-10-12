@@ -144,13 +144,15 @@ Esta sección describe los endpoints de la API para gestionar inventario y donac
 - **Body Example (JSON):**
 
   ```json
-  {
-    "non_perishables": 5,
-    "cereals": 2,
-    "fruits_vegetables": 7,
-    "dairy": 1,
-    "meat": 2
-  }
+{
+  "non_perishables": 20,
+  "cereals": 15,
+  "fruits_vegetables": 30,
+  "dairy": 10,
+  "meat": 5,
+  "donator": "John Doe",
+  "region": "North"
+}
   ```
 
   **Descripción:** Registra las donaciones recibidas y actualiza el conteo de donaciones del mes y la semana según la fecha de la solicitud.
