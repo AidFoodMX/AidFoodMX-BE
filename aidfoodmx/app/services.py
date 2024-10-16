@@ -542,18 +542,42 @@ def get_donations_per_month_of_year():
     
 def get_top_donators_per_region(region):
     try:
-        # Query donations by region and group by donator
-        result = supabase.table('donations').select('donator, COUNT(*) as total_donations').eq('region', region).group('donator').execute()
+        # Fetch all donations from the specified region
+        result = supabase.table('donations').select('donator, non_perishables, cereals, fruits_vegetables, dairy, meat').eq('region', region).execute()
 
-        # Sort the result by total donations and return the top donators
-        top_donators = sorted(result.data, key=lambda x: x['total_donations'], reverse=True)
+        # Initialize a dictionary to aggregate donations by donator
+        donator_aggregation = {}
+
+        for donation in result.data:
+            donator = donation.get('donator')
+            if donator not in donator_aggregation:
+                donator_aggregation[donator] = {
+                    'total_non_perishables': 0,
+                    'total_cereals': 0,
+                    'total_fruits_vegetables': 0,
+                    'total_dairy': 0,
+                    'total_meat': 0,
+                    'total_donations': 0
+                }
+
+            # Sum up the donations per category
+            donator_aggregation[donator]['total_non_perishables'] += donation.get('non_perishables', 0)
+            donator_aggregation[donator]['total_cereals'] += donation.get('cereals', 0)
+            donator_aggregation[donator]['total_fruits_vegetables'] += donation.get('fruits_vegetables', 0)
+            donator_aggregation[donator]['total_dairy'] += donation.get('dairy', 0)
+            donator_aggregation[donator]['total_meat'] += donation.get('meat', 0)
+            donator_aggregation[donator]['total_donations'] += 1
+
+        # Convert the dictionary to a sorted list of top donators based on total donations
+        top_donators = sorted(
+            [{'donator': donator, **data} for donator, data in donator_aggregation.items()],
+            key=lambda x: x['total_donations'],
+            reverse=True
+        )
 
         return {"message": "Top donators per region", "top_donators": top_donators}
     except Exception as e:
-        return {"message": "Failed to get top donators per region", "error": str(e)}
-    
-    
-# Servicio para obtener las donaciones por semana
+        return {"message": "Failed to get top donators per region", "error": str(e)}# Servicio para obtener las donaciones por semana
 
 def get_kind_of_donations_per_month():
     try:
@@ -714,12 +738,6 @@ def record_multiple_donations(donations):
     except Exception as e:
         return {"message": "Failed to record multiple donations", "error": str(e)}
     
-def get_top_donators_per_region(region):
-    try:
-        result = supabase.rpc('get_top_donators_per_region', {"region_input": region}).execute()
-        return {"top_donators": result.data}
-    except Exception as e:
-        return {"message": "Failed to get top donators per region", "error": str(e)}
 
 def get_top_donators_global():
     try:
