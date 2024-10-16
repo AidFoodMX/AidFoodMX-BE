@@ -741,6 +741,73 @@ def record_multiple_donations(donations):
 
 def get_top_donators_global():
     try:
+        # Fetch all donations globally
+        result = supabase.table('donations').select('donator, non_perishables, cereals, fruits_vegetables, dairy, meat').execute()
+
+        # Initialize a dictionary to aggregate donations by donator globally
+        donator_aggregation = {}
+
+        for donation in result.data:
+            donator = donation.get('donator')
+            if donator not in donator_aggregation:
+                donator_aggregation[donator] = {
+                    'total_non_perishables': 0,
+                    'total_cereals': 0,
+                    'total_fruits_vegetables': 0,
+                    'total_dairy': 0,
+                    'total_meat': 0,
+                    'total_donations': 0
+                }
+
+            # Sum up the donations per category
+            donator_aggregation[donator]['total_non_perishables'] += donation.get('non_perishables', 0)
+            donator_aggregation[donator]['total_cereals'] += donation.get('cereals', 0)
+            donator_aggregation[donator]['total_fruits_vegetables'] += donation.get('fruits_vegetables', 0)
+            donator_aggregation[donator]['total_dairy'] += donation.get('dairy', 0)
+            donator_aggregation[donator]['total_meat'] += donation.get('meat', 0)
+            donator_aggregation[donator]['total_donations'] += 1
+
+        # Convert the dictionary to a sorted list of top donators globally based on total donations
+        top_donators = sorted(
+            [{'donator': donator, **data} for donator, data in donator_aggregation.items()],
+            key=lambda x: x['total_donations'],
+            reverse=True
+        )
+
+        return {"message": "Top donators globally", "top_donators_global": top_donators}
+    except Exception as e:
+        return {"message": "Failed to get top donators globally", "error": str(e)}
+    try:
+        # Query donations globally and apply aggregation directly in the select fields
+        result = supabase.table('donations') \
+            .select('donator, SUM(non_perishables) as total_non_perishables, SUM(cereals) as total_cereals, '
+                    'SUM(fruits_vegetables) as total_fruits_vegetables, SUM(dairy) as total_dairy, '
+                    'SUM(meat) as total_meat, COUNT(id) as total_donations') \
+            .group_by('donator') \
+            .execute()
+
+        # Sort the result by total donations and return the top donators globally
+        top_donators = sorted(result.data, key=lambda x: x['total_donations'], reverse=True)
+
+        return {"message": "Top donators globally", "top_donators_global": top_donators}
+    except Exception as e:
+        return {"message": "Failed to get top donators globally", "error": str(e)}
+    try:
+        # Query donations globally and group by donator
+        result = supabase.table('donations') \
+            .select('donator, SUM(non_perishables) as total_non_perishables, SUM(cereals) as total_cereals, '
+                    'SUM(fruits_vegetables) as total_fruits_vegetables, SUM(dairy) as total_dairy, '
+                    'SUM(meat) as total_meat, COUNT(*) as total_donations') \
+            .group('donator') \
+            .execute()
+
+        # Sort the result by total donations and return the top donators globally
+        top_donators = sorted(result.data, key=lambda x: x['total_donations'], reverse=True)
+
+        return {"message": "Top donators globally", "top_donators_global": top_donators}
+    except Exception as e:
+        return {"message": "Failed to get top donators globally", "error": str(e)}
+    try:
         result = supabase.rpc('get_top_donators_global').execute()
         return {"top_donators_global": result.data}
     except Exception as e:
