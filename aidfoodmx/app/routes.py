@@ -149,33 +149,32 @@ def register_routes(app):
         return jsonify(data), 200
         
        
-    # Ruta POST para registrar múltiples beneficiarios
-    @app.route('/register_multiple_beneficiaries', methods=['POST'])
-    def register_multiple_beneficiaries_route():
-        beneficiaries = request.json  # Expecting a list of beneficiaries in JSON format
-        result = register_multiple_beneficiaries(beneficiaries)
-        return jsonify(result), 201
-    
     @app.route('/generate_insights', methods=['POST'])
     def insights_endpoint():
         try:
-            # Extract region from the request JSON body
-            data = request.get_json()
+            data = request.get_json(force=True)
+            print(f"Parsed data: {data}")
             region = data.get('region')
+            print(f"Region: {region}")
+            
+            if not region:
+                raise ValueError("No region provided")
 
             # Call the service to generate insights
             insights = generate_insights(region)
+            print(f"Generated insights: {insights}")
 
+            # Return the response as a JSON
             return jsonify({
                 "message": "Insights generated",
-                "insights": insights
+                "insights": insights  # Flask will automatically convert this dict to JSON
             })
         except Exception as e:
+            print(f"Error: {e}")
             return jsonify({
                 "message": "Failed to generate insights",
                 "error": str(e)
             }), 500
-            
     @app.route('/get_regions', methods=['GET'])
     def get_regions():
         try:
